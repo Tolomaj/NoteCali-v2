@@ -8,6 +8,7 @@ make:
 	rm src/main.o
 	rm src/.qmake.stash
 	rm src/Makefile
+	rm src/moc_*
 	cd output && ./main
 
 clear:
@@ -15,3 +16,4 @@ clear:
 	rm src/main.o
 	rm src/.qmake.stash
 	rm src/Makefile
+	rm src/moc_*
