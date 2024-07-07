@@ -38,4 +38,6 @@ class SettingsLink : public SettingsLinkAP, public SettingsLinkGP{
     public: virtual void setBool(std::string name,bool value) = 0;
     public: virtual void setInt(std::string name,int value) = 0;
     public: virtual void setWString(std::string name,std::wstring value) = 0;
+
+    public: virtual std::string get_cathegory(std::string name) = 0;
 };

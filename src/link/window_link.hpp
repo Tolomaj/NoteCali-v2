@@ -15,4 +15,5 @@ class SettingsWindowLink{
     public: virtual void setBool(std::string name,bool value) = 0;
     public: virtual void setInt(std::string name,int value) = 0;
     public: virtual void setWString(std::string name,std::wstring value) = 0;
+    public: virtual void setSpecial(std::string name) = 0;
 };

@@ -21,90 +21,159 @@
 #include "../../link/settings_link.hpp"
 
 ///GUI_Window : Objekt hlavního okna vytváří hlavní rozložení ovladacích prvků.
-class CalcBody : public QWidget { 
+class CalcBody : public QSplitter { 
 Q_OBJECT
 private:
     SolutionBox * solution_box;
     QBoxLayout * layout;
-    QSplitter *spliter;
     QTextEdit * text;
     QFont font;
     CalculatorWindowLink * controller;
+    SettingsLinkAP * settings;
 
-public slots:
+    void sincSolutions(std::vector<std::wstring> * lines){      
+        solution_box->setCount(lines->size());
 
-    void onTextChanged(){
+        // resize solutions
+
+        QRect rct = text->geometry();
+        rct.setWidth(rct.width() - 8 );
+
+        for (size_t i = 0; i < lines->size(); i++){
+            std::wstring line = lines->at(i);
+            QRect rect = text->fontMetrics().boundingRect(rct, Qt::AlignLeft | Qt::TextWordWrap , QString::fromStdWString(line));
+            solution_box->setWidth(i,rect.height());
+        }
+    }
+
+    std::vector<std::wstring> getLines(){
         std::vector<std::wstring> lines;
         std::wstring line;
         std::wstringstream wss(text->toPlainText().toStdWString());
         while(std::getline(wss, line, L'\n')) {
             lines.push_back(line);
         }
+        return lines;
+    };
 
+
+
+public slots:
+
+    void resized(){
+
+    }
+
+    void onTextChanged(){
+        std::vector<std::wstring>lines = this->getLines();
+        this->sincSolutions(&lines);
+
+        for (size_t i = 0; i < lines.size(); i++){
+            std::wstring line = lines.at(i);
+            MathSolutionLine solution;
+            solution.solution = std::string( line.begin(), line.end() );
+            solution_box->setSolution(i,&solution);
+        }
         controller->solve(&lines);
-
-
-      /*  QRect rct = text->geometry();
-        rct.setWidth(rct.width() - 8 );
-        QRect rect = text->fontMetrics().boundingRect(rct, Qt::AlignLeft | Qt::TextWordWrap, text->toPlainText());
-
-        int wh = rect.height();
-
-        solution_box->setWidth(0,wh);
-
-        std::cout <<"text changed:" << wh << "for : " << text->toPlainText().toStdString() << std::endl;*/
+        text->style()->pixelMetric(QStyle::PM_ScrollBarExtent);
     }
 
 public: 
-    CalcBody(SettingsLinkAP * settings, CalculatorWindowLink * controller) : QWidget(){
+    CalcBody(SettingsLinkAP * settings, CalculatorWindowLink * controller) : QSplitter(Qt::Horizontal){
+        this->settings = settings;
         this->controller = controller;
         font = QFont("Helvetica", 15);
 
-        layout = new QBoxLayout(QBoxLayout::Direction::LeftToRight,this);
-        layout->setSpacing(0);
-        layout->setContentsMargins(0,0,0,0);
+        this->setContentsMargins(0,0,0,0);
+        this->setChildrenCollapsible(false);
 
         text = new QTextEdit();
+        text->setMinimumWidth(40);
         text->setFrameStyle(QFrame::NoFrame);
-        std::wstring str = L"- helo this is🥰 anĎ lÓng teČt helo😀";
-        //text->setPlainText("- helo this is and long text helo");
-        text->setHtml(QString::fromStdWString(str));
+        text->setHtml(QString::fromStdWString(L"- helo this is🥰 anĎ lÓng teČt helo😀"));
         text->setFont(font);
         text->setStyleSheet("background-color:transparent;");
+        text->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+        text->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        text->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         connect(&(*text), SIGNAL(textChanged()), this, SLOT(onTextChanged()));
-        layout->addWidget(text);
+        this->addWidget(text);
 
-        spliter = new QSplitter(Qt::Vertical);
-        spliter->setFixedWidth(6);
-        spliter->setFrameStyle(QFrame::Raised);
-        layout->addWidget(spliter);
+
 
         solution_box = new SolutionBox(this);
+        solution_box->setMinimumWidth(20);
+        solution_box->setFrameStyle(QFrame::NoFrame);
         solution_box->setContentsMargins(5,0,5,0);
-        layout->addWidget(solution_box);
+        solution_box->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        solution_box->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        solution_box->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+        this->addWidget(solution_box);
 
-        updateStyles();
+ 
+        this->reloadStyles();
 
+        /* todo scroll sinc*/
+        connect(text->verticalScrollBar(), &QScrollBar::valueChanged, [this](int value){
+            solution_box->verticalScrollBar()->setValue(value);
+            
+        });
+        connect(solution_box->verticalScrollBar(), &QScrollBar::valueChanged, [this](int value){
+            text->verticalScrollBar()->setValue(value);
+        });
+
+
+    };
+
+    void present(std::vector<MathSolutionLine>* solved_lines) {
+
+        
+        //todo
+    };
+    
+    void highlite(std::vector<MathHighlite>* highlites) {
+        //todo
     };
 
     // nastavý styli elementů 
-    void updateStyles(){
-             
-        spliter->setStyleSheet("background-color:#3DAEE9; margin-top:40px; border-top-left-radius: 3px; border-top-right-radius: 3px;" );
-        //spliter->setStyleSheet("background-color:#3DAEE9; margin-top:20px; margin-bottom:20px; border-radius: 3px;" );
+    void reloadStyles(){
+        if(settings->getBool("FloatingDivider")){
+            this->setStyleSheet(R"(
+                QSplitter::handle {
+                    background-color:#3DAEE9; 
+                    margin-top:40px;
+                    margin-bottom:40px;
+                    border-radius: 3px; 
+                }
+        
+                QSplitter::handle:vertical {
+                    margin: 0;
+                    height: 6px;
+                }
+            )");
+        }else{
+            this->setStyleSheet(R"(
+                QSplitter::handle {
+                    background-color:#3DAEE9; 
+                    margin-top:40px;
+                    border-top-left-radius: 3px; 
+                    border-top-right-radius: 3px;
+                }
+        
+                QSplitter::handle:vertical {
+                    margin: 0;
+                    height: 6px;
+                }
+            )");
+        }
+   }
+
+
+    void resizeEvent(QResizeEvent* event) override{
+        std::vector<std::wstring>lines = this->getLines();
+        this->sincSolutions(&lines);
+
+        QSplitter::resizeEvent(event);
     }
-
-
-    /// event když okno je zmenšeno nebo zvětšeno / řeší zvětšování a zmenšování objektů okna
-    void resizeEvent(QResizeEvent* event){
-
-        QRect rct = text->geometry();
-        rct.setWidth(rct.width() - 8 );
-
-        QRect rect = text->fontMetrics().boundingRect(rct, Qt::AlignLeft | Qt::TextWordWrap , "- helo this is and long text helo");
-
-        std::cout <<"out_rect:"<< rect.height() << "-"<< rect.width() << "," << "in_rect:"<< text->geometry().width() << "-" << text->geometry().height() << std::endl;
-    };
-
 
 };

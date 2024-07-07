@@ -9,6 +9,7 @@ make:
 	rm src/.qmake.stash
 	rm src/Makefile
 	rm src/moc_*
+	rm src/*.o
 	cd output && ./main
 
 clear:

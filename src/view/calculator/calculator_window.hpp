@@ -20,10 +20,12 @@
 ///GUI_Window : Objekt hlavního okna vytváří hlavní rozložení ovladacích prvků.
 class CalculatorWindow: public QMainWindow { 
     QBoxLayout * layout;
-    QWidget * calculator_boady;
+    CalcBody * calculator_boady;
     QWidget * calculator_header = nullptr;
     SettingsLinkAP * settings;
     CalculatorWindowLink * controller;
+    bool keyAlt[2] = {false,false};
+
 public: 
 
     CalculatorWindow(SettingsLinkAP * settings, CalculatorWindowLink * controller){
@@ -38,10 +40,10 @@ public:
         layout->setContentsMargins(0,0,0,0);
         
         calculator_boady = new CalcBody(settings,controller);
+        calculator_boady->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
         layout->addWidget(calculator_boady);
 
         this->setCentralWidget(centralWidget);
-        //this->setWindowFlags(Qt::FramelessWindowHint);
         //this->setAttribute(Qt::WA_TranslucentBackground);
         //this->setStyleSheet("border-radius:5px");
 
@@ -51,10 +53,12 @@ public:
 
     };
 
-    void present(std::vector<MathSolutionLine>* solved_lines) {}; //todo
-    void highlite(std::vector<MathHighlite>* highlites) {}; //todo
+    void present(std::vector<MathSolutionLine>* solved_lines) { calculator_boady->present(solved_lines); };
+    void highlite(std::vector<MathHighlite>* highlites) { calculator_boady->highlite(highlites);  };
 
     void reloadStyles(){
+        calculator_boady->reloadStyles();
+
         if(settings->getBool("NativeTitleBar")){
             // if is set header, remove it
             if(calculator_header != nullptr){
@@ -64,17 +68,34 @@ public:
             }
             // set window to have native header
             this->setWindowFlags(this->windowFlags() & ~Qt::FramelessWindowHint);
+            this->show();
 
         }else{
             //set window as frameless
-            this->setWindowFlags(this->windowFlags() | Qt::FramelessWindowHint);
+            this->setWindowFlags(this->windowFlags() | Qt::FramelessWindowHint | Qt::Window | Qt::WindowSystemMenuHint);
 
             //if dont have custom header, create one
             if(calculator_header == nullptr){
                 calculator_header = new CalcHead(controller,this);
                 layout->addWidget(calculator_header);
             }
+            this->show();
         }
+    }
+
+    void keyPressEvent(QKeyEvent *e) override{
+        if(e->key()==Qt::Key_Alt){ keyAlt[0] = true; }
+        if(e->key()==Qt::Key_AltGr){ keyAlt[1] = true; }      
+        
+        if(keyAlt[0] == true && keyAlt[1] == true){
+            keyAlt[0] = keyAlt[1] = false;
+            controller->openSettings();
+        }
+    }
+
+    void keyReleaseEvent(QKeyEvent *e) override{
+        if(e->key()==Qt::Key_Alt){ keyAlt[0] = false; }
+        if(e->key()==Qt::Key_AltGr){ keyAlt[1] = false; }      
     }
 
 };

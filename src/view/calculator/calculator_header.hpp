@@ -63,7 +63,6 @@ public:
         layout->setSpacing(0);
         layout->setContentsMargins(0,0,0,0);
 
-
         QPushButton * menu = new HeaderButton("assets/menu.svg");
         connect(&(*menu), SIGNAL(clicked()), this, SLOT(settings_clicked()));
         layout->addWidget(menu);

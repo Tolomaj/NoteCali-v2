@@ -9,38 +9,59 @@
 #include <QTextDocument>
 #include <QFontMetrics>
 #include <QDebug>
-#include <QFrame>
-#include <iostream>
+#include <sstream>
+#include <string>
+#include <algorithm>
 
+
+#ifndef SETTINGS_LIST_GUARD
+#define SETTINGS_LIST_GUARD
+
+#include "settings_window.hpp"
 
 class CathegoryList : public QFrame { 
-public: 
+Q_OBJECT
+    SettingsWindow *parent;
     QBoxLayout * layout;
-    QWidget *parent;
-
-    CathegoryList(QWidget *parent = 0) : QFrame(parent){
+public slots:
+    void buttonclick(){
+        QPushButton *clickedButton = qobject_cast<QPushButton*>(sender());
+        if (clickedButton) {
+            parent->openCathegory(clickedButton->text().remove('&').toStdString());
+        }
+    }
+    
+public: 
+    CathegoryList(SettingsWindow *parent = 0) : QFrame(parent){
         this->parent = parent;
         this->setFrameStyle(QFrame::Panel | QFrame::Raised);
 
-        layout = new QBoxLayout(QBoxLayout::Direction::TopToBottom,this);
-        layout->setAlignment(Qt::AlignTop);
+        QBoxLayout * layoutA = new QBoxLayout(QBoxLayout::Direction::TopToBottom,this);
+        layoutA->setAlignment(Qt::AlignHCenter);
+
 
         QPixmap pixelmap("assets/icon.ico");
 
         QLabel * myLabel = new QLabel();
-        myLabel->setPixmap(pixelmap.scaled(20,20,Qt::KeepAspectRatio));
-        myLabel->setMargin(10);
+        myLabel->setPixmap(pixelmap.scaled(50,50,Qt::KeepAspectRatio));
+        myLabel->setMargin(20);
+        layoutA->addWidget(myLabel);
 
-        layout->addWidget(myLabel);
 
-        layout->addWidget(new QPushButton("cathegory1"));
-        layout->addWidget(new QPushButton("cathegory2"));
-        layout->addWidget(new QPushButton("cathegory3"));
+        layout = new QBoxLayout(QBoxLayout::Direction::TopToBottom,this);
+        layoutA->addLayout(layout);
+
+        layoutA->addWidget(new QLabel("helo")); // todo změny verzí
+        
 
     };
 
-    void addCathegory(){
-
+    void addCathegory(std::string cathegory_name){
+        QPushButton *pb = new QPushButton(QString(cathegory_name.c_str()));
+        pb->setText(QString(cathegory_name.c_str()));
+        layout->addWidget(pb);
+        connect( pb, SIGNAL(clicked()), this, SLOT(buttonclick()));
     }
-
 };
+
+#endif

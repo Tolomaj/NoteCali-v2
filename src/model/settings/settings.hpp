@@ -72,28 +72,32 @@ public:
     void createBoolEntry(std::string name,std::string category,bool defaultValue) override {
         boolSettngsList.push_back({name,category,defaultValue});
     };
+
+    // option is [1,2] (min,max) [3](step)
     void createIntEntry(std::string name,std::string category,int defaultValue,std::vector<int> options  = {}) override{
         intSettngsList.push_back({name,category,defaultValue,options});
     };
+    
+    // option is only 1 (isColor)
     void createWStringEntry(std::string name,std::string category,std::wstring defaultValue,std::vector<std::wstring> options  = {}) override {
         wstringSettngsList.push_back({name,category,defaultValue,options});
     };
 
     SettingsEntryBool getBoolEntry(int i) override {
-        if(i > boolSettngsList.size()){
+        if(i >= boolSettngsList.size()){
             return {"","",false};
         }
         return boolSettngsList.at(i);
     };
     SettingsEntryInt getIntEntry(int i) override {
-        if(i > intSettngsList.size()){
+        if(i >= intSettngsList.size()){
             return {"","",0};
         }
         return intSettngsList.at(i);
     };
     SettingsEntryWString getWStringEntry(int i) override {
-        if(i > wstringSettngsList.size()){
-            return {"","",0};
+        if(i >= wstringSettngsList.size()){
+            return {"","",L""};
         }
         return wstringSettngsList.at(i);
     };
@@ -109,5 +113,26 @@ public:
     void setWString(std::string name,std::wstring value) override {
         settings->setValue(name,QString::fromWCharArray(value.c_str()));
     };
+
+    std::string get_cathegory(std::string name){
+        for (SettingsEntryBool & entry : boolSettngsList) {
+            if(entry.name == name){
+                return entry.category;
+            }
+        } 
+        for (SettingsEntryInt & entry : intSettngsList) {
+            if(entry.name == name){
+                return entry.category;
+            }
+        } 
+        for (SettingsEntryWString & entry : wstringSettngsList) {
+            if(entry.name == name){
+                return entry.category;
+            }
+        } 
+        
+        dbgErr("no entry found for: " + name);
+        return "";
+    }
 };
 

@@ -31,14 +31,13 @@ int main(int argc, char **argv) {
 
     settings->createBoolEntry("NativeTitleBar","Style",false);
     settings->createBoolEntry("FloatingDivider","Style",false);
-    settings->createBoolEntry("ss","tst",false);
+    settings->createIntEntry("LineDefaultPosition","Style",70,{0,100});
+    settings->createWStringEntry("Theme","Style",L"Auto",{L"Dark",L"Light",L"Manual"});
 
-    settings->createWStringEntry("ss","tst",L"one",{L"one",L"two"});
-
-    settings->createWStringEntry("ss","tsta",L"helo");
-
-    settings->setBool("NativeTitleBar",false);
-
+    settings->createBoolEntry("UseLineModifiers","Calculation",true);
+    settings->createBoolEntry("UseMetrics","Calculation",false);
+    settings->createBoolEntry("UseRadians","Calculation",false);
+    settings->createBoolEntry("UseSumVariable","Calculation",true);
 
 
     Controller * controller = new Controller(settings);
