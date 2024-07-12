@@ -37,7 +37,7 @@ public:
                     return entry.defaultValue;
                 }
             } 
-            dbgErr("no entry found for: " + name);
+            //todo dbgErr("no entry found for: " + name);
         }
         return val.toBool();
     };
@@ -50,7 +50,7 @@ public:
                     return entry.defaultValue;
                 }
             } 
-            dbgErr("no entry found for: " + name);
+            //todo dbgErr("no entry found for: " + name);
         }
         return val.toInt();
     };
@@ -63,24 +63,23 @@ public:
                     return entry.defaultValue;
                 }
             } 
-            dbgErr("no entry found for: " + name);
+            //todo dbgErr("no entry found for: " + name);
         }
         return val.toString().toStdWString();
     };
 
 
-    void createBoolEntry(std::string name,std::string category,bool defaultValue) override {
-        boolSettngsList.push_back({name,category,defaultValue});
+    void createBoolEntry(std::string name,std::string category,bool defaultValue,std::wstring desription) override {
+        boolSettngsList.push_back({name,category,defaultValue,desription});
     };
 
     // option is [1,2] (min,max) [3](step)
-    void createIntEntry(std::string name,std::string category,int defaultValue,std::vector<int> options  = {}) override{
-        intSettngsList.push_back({name,category,defaultValue,options});
+    void createIntEntry(std::string name,std::string category,int defaultValue,std::wstring desription,std::vector<int> options  = {}) override{
+        intSettngsList.push_back({name,category,defaultValue,desription,options});
     };
     
-    // option is only 1 (isColor)
-    void createWStringEntry(std::string name,std::string category,std::wstring defaultValue,std::vector<std::wstring> options  = {}) override {
-        wstringSettngsList.push_back({name,category,defaultValue,options});
+    void createWStringEntry(std::string name,std::string category,std::wstring defaultValue,std::wstring desription, StringType type = PLAIN,std::vector<std::wstring> options  = {}) override {
+        wstringSettngsList.push_back({name,category,defaultValue,desription,type,options});
     };
 
     SettingsEntryBool getBoolEntry(int i) override {
@@ -131,7 +130,7 @@ public:
             }
         } 
         
-        dbgErr("no entry found for: " + name);
+        //todo dbgErr("no entry found for: " + name);
         return "";
     }
 };

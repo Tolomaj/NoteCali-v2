@@ -6,12 +6,11 @@
 #include <QBoxLayout>
 #include <QTextEdit>
 #include <QSplitter>
-#include <QTextBlock>
-#include <QTextDocument>
 #include <QFontMetrics>
 #include <sstream>
 #include <string>
 #include <algorithm>
+#include <QFontComboBox>
 
 #include <iostream>
 #include <vector>
@@ -20,26 +19,25 @@
 #include "../../link/window_link.hpp"
 
 ///GUI_Window : Objekt hlavního okna vytváří hlavní rozložení ovladacích prvků.
-class BoolEntry : public QFrame { 
+class FontStringEntry : public QFrame { 
 Q_OBJECT
     std::string name;
     SettingsWindowLink *settings_link;
     SettingsLinkAP *settings;
 
-    QCheckBox * checkbox;
+    QFontComboBox * font;
     QBoxLayout * layout;
   
 public slots:
 
-    void box_toggled(){
-        std::cout << "settbool" << std::endl;
-        settings_link->setBool(name,checkbox->isChecked());
-        //checkbox->setChecked(settings->getBool(name));
+    void changed(const QFont & font){
+        std::wstring wtxt = font.family().toStdWString();
+        settings_link->setWString(name,wtxt);
     }
 
 public: 
   
-    BoolEntry(SettingsWindowLink *settings_link,SettingsLinkAP *settings, std::string name) : QFrame(){
+    FontStringEntry(SettingsWindowLink *settings_link,SettingsLinkAP *settings, std::string name) : QFrame(){
         this->name = name;
         this->settings = settings;
         this->settings_link = settings_link;
@@ -49,16 +47,15 @@ public:
 
         layout = new QBoxLayout(QBoxLayout::Direction::LeftToRight,this);
 
-        checkbox = new QCheckBox();
-        checkbox->setChecked(settings->getBool(name));
-        layout->addWidget(checkbox);
+        font = new QFontComboBox();
+        font->setCurrentFont(QFont(QString::fromStdWString(settings->getWString("Font")) , settings->getInt("FontSize")));
+        layout->addWidget(font);
         
         QLabel * label = new QLabel(QString::fromStdString(name));
         label->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
         layout->addWidget(label);
         
-        //connect(this, QCheckBox::toggled, this, SLOT(toggled(int)));
-        connect(checkbox, SIGNAL(clicked()), this, SLOT(box_toggled()));
+        connect(font, SIGNAL(currentFontChanged(const QFont &)), this, SLOT(changed(const QFont &)));
 
     };
 

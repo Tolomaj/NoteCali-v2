@@ -5,7 +5,7 @@
 #include "../../../include/ttmath/ttmath.h"
 #include "../../link/debugger.hpp"
 #include "../../link/settings_link.hpp"
-#include "LineSeparator.h"
+#include "../../link/math_link.hpp"
 
 using namespace std;
 
@@ -21,7 +21,7 @@ using namespace std;
 #define END_LINE_SOLVING 25
 
 #define VARIABLE_FORBIDENT_SIMBOLS_LENGHT 8
-const wchar forbidentVariableSimbols[VARIABLE_FORBIDENT_SIMBOLS_LENGHT] = { '[' , ']' , '{' , '}' , '=' , '&' , '@' , ' '};
+const wchar_t forbidentVariableSimbols[VARIABLE_FORBIDENT_SIMBOLS_LENGHT] = { '[' , ']' , '{' , '}' , '=' , '&' , '@' , ' '};
 
 #define FAST_SAME false
 
@@ -91,7 +91,7 @@ void MatematicalSolver::loadVariablesFromTable() {
 
 /* //todo load variables from settings
     for (size_t i = 0; i < variableTable.table.size(); i++) {
-        dbgLOG(variableTable.table.at(i).varName);
+        //todo dbgLog(variableTable.table.at(i).varName);
         systemVariableTable.Add(variableTable.table.at(i).varName, variableTable.table.at(i).number);
     }
 */
@@ -135,10 +135,10 @@ void MatematicalSolver::calculateSumForLinesAbove(int lineNum) {
 
         if (err == 0) {
             varTable.EditValue("sum", parser.stack[0].value.ToString());
-            dbgLOG("suma pro linku - " + to_string(lineNum) + " : " + parser.stack[0].value.ToString());
+            ////todo dbgLog("suma pro linku - " + to_string(lineNum) + " : " + parser.stack[0].value.ToString());
         } else {
-            dbgLOG("error sumarizace - " + to_string(lineNum) + " : ",false);
-            dbgLOG(lineFormula);
+            ////todo dbgLog("error sumarizace - " + to_string(lineNum) + " : ",false);
+            ////todo dbgLog(lineFormula);
         }
 
     }
@@ -160,7 +160,7 @@ int MatematicalSolver::solve(vector<mline>* lines) {
         varTable.Add("sum", "0");
     };
 
-    dbgLOG("<------ SOLVING LINES ------>");
+    //todo dbgLog("<------ SOLVING LINES ------>");
 
     for (size_t i = 0; i < lines->size(); i++) {
 
@@ -205,12 +205,12 @@ int MatematicalSolver::solve(vector<mline>* lines) {
             setDefaultMathRules();
         }
 
-        dbgLOG(L"výsledek linky - " + to_wstring(i) + L" : " + lines->at(i).solution + L"\n");
+        //todo dbgLog(L"výsledek linky - " + to_wstring(i) + L" : " + lines->at(i).solution + L"\n");
 
     }
     lineUsingMetrics = false;
     varTable = systemVariableTable;
-    dbgLOG("<---- SOLVING LINES DONE ---->");
+    //todo dbgLog("<---- SOLVING LINES DONE ---->");
    
     return 0;
 }
@@ -219,7 +219,7 @@ int MatematicalSolver::solveLine(wstring line, wstring* solution, wstring* solut
     
     //převod XX:XX na sekundy
     // vždy rozdělí na dvě části podle : a ty vypočítá nezávysle to se opakuje dokud nezbyde výsledek
-    if (settings.useTimeFormat) {
+    if (settings->getBool("UseTimeFormat")) {
         size_t ocur2 = line.find(L":");
         while (ocur2 != wstring::npos) {
 
@@ -280,11 +280,11 @@ int MatematicalSolver::solveLine(wstring line, wstring* solution, wstring* solut
 
             // teď je linka rozdělená na:  beforestring ( fnum : snum )?: afterstring  
 
-            dbgLOG(L"operator : sekaná linka ->" + beforestring + L";" + fnum + L";" + snum + L";" + afterstring);
 
             wstring lineFormula = L"(" + fnum + L")*60+" + snum;
 
-            dbgLOG(L"operator : sformulovaná linka->" + lineFormula);
+
+
 
             wstring solution = L"";
             wstring solutionNR = L"";
@@ -303,8 +303,12 @@ int MatematicalSolver::solveLine(wstring line, wstring* solution, wstring* solut
                 return MATHERR_INVALID_SINTAX;
             }
 
-            dbgLOG(L"operator : poparsovaná linaka->" + line);
             ocur2 = line.find(L":");
+            dbg(
+                std::wcout << L"operator : sekaná linka ->" << beforestring.c_str() << L";" <<  fnum.c_str() << L";" << snum.c_str() << L";" << afterstring.c_str() << std::endl;
+                std::wcout << L"operator : sformulovaná linka->" << lineFormula.c_str() << std::endl;
+                std::wcout << L"operator : poparsovaná linaka->" << line.c_str() << std::endl;
+            )
         }
     }
 
@@ -318,13 +322,13 @@ int MatematicalSolver::solveLine(wstring line, wstring* solution, wstring* solut
     }
 
     // korekce neuzavřených závorek & ignorování veikosti písmen
-    if (settings.ignoreHightDiference || settings.corectParenthesis) {
+    if (settings->getBool("IgnoreHightDiference") || settings->getBool("CorectParenthesis")) {
         size_t parCountOP = 0,parCountCL = 0;
         for (size_t i = 0; i < line.length(); i++){
-            if (settings.ignoreHightDiference) {
+            if (settings->getBool("IgnoreHightDiference")) {
                 line.at(i) = towlower(line.at(i));      //set all characters to small
             }
-            if (settings.corectParenthesis) {
+            if (settings->getBool("CorectParenthesis")) {
                 if (line.at(i) == L'(') {
                     parCountOP++;
                 }else if (line.at(i) == L')') {
@@ -333,7 +337,7 @@ int MatematicalSolver::solveLine(wstring line, wstring* solution, wstring* solut
             }
         }
 
-        if (settings.corectParenthesis) {
+        if (settings->getBool("CorectParenthesis")) {
             if (parCountOP > parCountCL) {
                 for (size_t i = 0; i < parCountOP - parCountCL; i++){
                     line = line + L")";
@@ -343,7 +347,7 @@ int MatematicalSolver::solveLine(wstring line, wstring* solution, wstring* solut
     }
 
     // pokud jsou zaplé ljumps anhradí skok výsledkem
-    if (settings.allowLineJump) {
+    if (settings->getBool("AllowLineJump")) {
         size_t lastSeenEq = line.find(POINTER_CHAR);
         while (lastSeenEq != string::npos) {  
             for (int i = lastSeenEq; i < line.length(); i++) {
@@ -355,7 +359,7 @@ int MatematicalSolver::solveLine(wstring line, wstring* solution, wstring* solut
                             *errorText = L"Invalid Line Jump";
                             return MATHERR_INVALID_LINE_JUMP_NUM;
                         }
-                        if (settings.useNoroundPointers) {
+                        if (settings->getBool("UseNoRoundPointers")) {
                             line = line.substr(0, lastSeenEq) + L"(" + procesedLines->at(lineId).solutionNoRound + L")" + line.substr(i + 1, line.length() - i);
                         } else {
                             line = line.substr(0, lastSeenEq) + L"(" + procesedLines->at(lineId).solution + L")" + line.substr(i + 1, line.length() - i);
@@ -408,7 +412,9 @@ int MatematicalSolver::modifyMathRules(wstring * rules){
             ConvertionRole.round = std::stoi(getNumFrom(rules, rulePos + 1));
         }
         catch (std::exception const& e) {
-            dbgLOG("error modifier INT r");
+            dbg(
+                std::cout << "error modifier INT r" << std::endl;
+            )
         }
     }
 
@@ -419,7 +425,9 @@ int MatematicalSolver::modifyMathRules(wstring * rules){
             ConvertionRole.base = std::stoi(getNumFrom(rules, rulePos + 1));
         }
         catch (std::exception const& e) {
-            dbgLOG("error error modifier INT b");
+            dbg(
+                std::cout << "error modifier INT b" << std::endl;
+            )
         }
     }
 
@@ -438,10 +446,10 @@ int MatematicalSolver::modifyMathRules(wstring * rules){
 };
 
 bool MatematicalSolver::setDefaultMathRules() {
-    ConvertionRole.round = settings.roundToDec;
-    ConvertionRole.group = ' ' * (bool)settings.numberGrouping;
-    ConvertionRole.group_digits = settings.numberGrouping;
-    ConvertionRole.scient = settings.useSientific;
+    ConvertionRole.round = settings->getInt("RoundToDec");
+    ConvertionRole.group = ' ' * (bool)settings->getInt("NumberGrouping");
+    ConvertionRole.group_digits = settings->getInt("NumberGrouping");
+    ConvertionRole.scient = settings->getBool("UseSientific");
     ConvertionRole.base_round = false;
     ConvertionRole.scient_from = 100; //pokud je nad 100 míst použije se sience number i když je vyplé (kvuli tomu aby se nepoužívalo dřív)
     ConvertionRole.base = 10;
@@ -500,14 +508,14 @@ bool MatematicalSolver::solveVariableLine(mline* line, int eqPos) {
 
     wstring beforeEQ = line->line.substr(0, eqPos);
 
-    if (settings.ignoreHightDiference) {
+    if (settings->getBool("IgnoreHightDiference")) {
         size_t parCountOP = 0, parCountCL = 0;
         for (size_t i = 0; i < beforeEQ.length(); i++) {
             beforeEQ.at(i) = towlower(beforeEQ.at(i));      //set all characters to small
         }
     }
 
-    if (settings.useSumVariable && beforeEQ == L"sum") {
+    if (settings->getBool("UseSumVariable") && beforeEQ == L"sum") {
         creteErrorLineSolution(line, L"Redefintion of system Sum variable", MATHERR_INVALID_VARIABLE_NAME);
         return false;
     }
@@ -530,10 +538,10 @@ bool MatematicalSolver::solveVariableLine(mline* line, int eqPos) {
     }
     else {
         line->completlySolved = true;
-        line->localVariableName = L"📋";// beforeEQ; 
+        line->localVariableName = beforeEQ;
 
         wstring solutionVtext;
-        if (settings.useNoroundPointers) {
+        if (settings->getBool("UseNoRoundPointers")) {
             solutionVtext = line->solutionNoRound;
         }else {
             solutionVtext = line->solution;
@@ -554,7 +562,7 @@ void MatematicalSolver::executeMathComand(mline* line) {
 
 
     if (line->command == L"sumbrake" || line->command == L"rstsum") {
-        line->solution = L"🚮";
+        line->solution = L"SUM_BREAK";
         line->isComandDone = true;
         line->completlySolved = true;
         line->isSumBrake = true;
@@ -566,7 +574,7 @@ void MatematicalSolver::executeMathComand(mline* line) {
             if (procesedLines->at(i).completlySolved && procesedLines->at(i).localVariableName == L"") {
                 textnumber.append(procesedLines->at(i).solution + L" + ");
             }
-            dbgLOG(textnumber);
+            //todo dbgLog(textnumber);
         }
 
         textnumber.append(L"0");
@@ -591,7 +599,7 @@ void MatematicalSolver::executeMathComand(mline* line) {
             if (procesedLines->at(i).completlySolved) {
                 textnumber.append(procesedLines->at(i).solution + L" + ");
             }
-            dbgLOG(textnumber);
+            //todo dbgLog(textnumber);
         }
 
         textnumber.append(L"0");
@@ -668,7 +676,7 @@ int MatematicalSolver::findEqualition(wstring* line) { // vrátí true když ops
         // test alos before
 
         if (lastSeenEq + 1 < line->length() && line->at(lastSeenEq + 1) != L'=') {
-            if (lastSeenEq - 1 >= 0 && line->at(lastSeenEq - 1) != L'<' && line->at(lastSeenEq - 1) != L'<' && line->at(lastSeenEq - 1) != L'!') { // check if = is not operation
+            if (lastSeenEq >= 1 && line->at(lastSeenEq - 1) != L'<' && line->at(lastSeenEq - 1) != L'<' && line->at(lastSeenEq - 1) != L'!') { // check if = is not operation
                 return lastSeenEq;  // vrtí pozici =
             }
 
@@ -685,7 +693,7 @@ bool MatematicalSolver::isValidVariableName(wstring name) { // var neobsahuje []
     if (iswdigit(name.at(0))) { return false; }
 
     for (size_t i = 0; i < name.length(); i++) {
-        wchar simbol = name.at(i);
+        wchar_t simbol = name.at(i);
         for (size_t c = 0; c < VARIABLE_FORBIDENT_SIMBOLS_LENGHT; c++) {
             if (simbol == forbidentVariableSimbols[c]) {
                 return false;
@@ -699,7 +707,8 @@ bool MatematicalSolver::isValidVariableName(wstring name) { // var neobsahuje []
 
 void MatematicalSolver::creteErrorLineSolution(mline* line, wstring text, int errorCode) {
     line->completlySolved = false;
-    line->solutionModifier = L"⚠";
+    line->isError = true;
+    line->solutionModifier = L"ERROR";
     line->solution = text;
-    line->error.type = errorCode;
+    //line->error.type = errorCode;
 }

@@ -9,7 +9,6 @@
 #include <QTextDocument>
 #include <QFontMetrics>
 #include <QString>
-#include <QDebug>
 
 #include <iostream>
 

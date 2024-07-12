@@ -1,9 +1,14 @@
 #include "../link/math_link.hpp"
 #include "../link/settings_link.hpp"
+#include "../link/math_link.hpp"
 #include "../link/window_link.hpp"
 #include "../view/calculator/calculator_window.hpp"
 #include "../view/settings/settings_window.hpp"
+
 #include "../model/math/line_separator.h"
+#include "../model/math/math_solver.h"
+
+
 
 class Controller : public CalculatorWindowLink , public SettingsWindowLink{
 private:
@@ -11,12 +16,14 @@ private:
     SettingsWindow *settings_window = nullptr;
     SettingsLink * settings;
     LineSeparator * line_separator;
+    MatematicalSolver * math_solver;
     //algorithm
 public:
     Controller(SettingsLink * settings){
         this->settings = settings;
         calculator_window = new CalculatorWindow(settings,this);
         line_separator = new LineSeparator(settings);
+        math_solver = new MatematicalSolver(settings);
     };
 
     /// @brief interface form CalculatorWindowLink
@@ -26,7 +33,11 @@ public:
             settings_window->close();
         }
     };
+
     void openSettings() override {
+
+
+
         if(settings_window == nullptr){
             settings_window = new SettingsWindow(settings,this);
             settings_window->loadSettings(settings);
@@ -37,6 +48,7 @@ public:
     };
 
     void solve(std::vector<std::wstring> * lines) override {
+
         std::wstring linesAll; 
         
         for (size_t i = 0; i < lines->size(); i++){
@@ -46,23 +58,38 @@ public:
             std::string str( wide.begin(), wide.end());
         }
 
-
-        /*      HAZARD ZONE         */
-        line_separator->procesInput(&linesAll);
+        vector<mline> * separated_lines = line_separator->procesInput(&linesAll);
 
         dbg(
+            system(CLEAR);
             std::cout << CLR_BLE << "┌──────────────────────────────────────────┐" << CLR_NC << std::endl;
             std::cout << CLR_BLE << "│░░░░░░░░░░░░LINE SOLWING START░░░░░░░░░░░░│" << CLR_NC << std::endl;
             std::cout << CLR_BLE << "└──────────────────────────────────────────┘" << CLR_NC << std::endl;
             line_separator->printLines();
-
         )
 
 
-        std::vector<MathSolutionLine> solved_lines;
-        solved_lines.push_back({"solution",false,false,false});
+        math_solver->solve(separated_lines);
 
-        calculator_window->present(&solved_lines);
+        dbg(
+            std::cout << CLR_YEL << "VYŘEŠENÉ LINKY:" << std::endl;
+            for (size_t i = 0; i < separated_lines->size(); i++) {
+                std::cout << "╠═╦line(" << i << ")»";
+                std::wcout << L" mod:[" << separated_lines->at(i).lineModifier 
+                           << L"] cmd:[" << separated_lines->at(i).command 
+                           << L"] solved:[" << separated_lines->at(i).completlySolved 
+                           << L"] line:[" << separated_lines->at(i).line << L"]" << std::endl;
+                std::cout << "║ ╚line(" << i << ")»";
+                std::wcout << L"var:[" << separated_lines->at(i).localVariableName << L"]" 
+                        << L" mod:[" << separated_lines->at(i).solutionModifier 
+                        //<< L"] unit:[" << separated_lines->at(i).solutionUnits
+                        << L"] noRound:[" << separated_lines->at(i).solutionNoRound
+                        << L"] solution:[" << separated_lines->at(i).solution << L"]" << std::endl;
+            };
+            std::cout << "╚END" << CLR_NC << std::endl;
+        )
+
+        calculator_window->present(separated_lines);
     };
 
     /// @brief interface form SettingsWindowLink
@@ -71,11 +98,11 @@ public:
     };
 
     void onSettingsChangeUpdate(std::string name){
-        std::string cathegory = settings->get_cathegory(name);
-        if(cathegory == "Style"){
+        //std::string cathegory = settings->get_cathegory(name);
+        //if(cathegory == "Style"){
             calculator_window->reloadStyles();
             settings_window->reloadStyles();
-        }
+        //}
     }
 
     void setBool(std::string name,bool value) override {
@@ -91,7 +118,9 @@ public:
         std::cout << "settingInt: " << name << std::endl;
     };
     void setWString(std::string name,std::wstring value) override {
-        //todo
+        settings->setWString(name,value);
+        this->onSettingsChangeUpdate(name);
+
         std::cout << "settingWstring: " << name << std::endl;
     };
 

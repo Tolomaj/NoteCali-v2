@@ -8,10 +8,13 @@
 /// @brief Settings enum
 enum ThemeType{ AUTO, LIGHT, DARK, CUSTOM };
 
+enum StringType{ PLAIN ,COMBO, FONT, COLOR };
+
+
 /// @brief Settings entry (way to get all settings)
-struct SettingsEntryBool{ std::string name; std::string category; bool defaultValue; };
-struct SettingsEntryInt{ std::string name; std::string category; int defaultValue; std::vector<int> options;};
-struct SettingsEntryWString{ std::string name; std::string category; std::wstring defaultValue; std::vector<std::wstring> options;};
+struct SettingsEntryBool{ std::string name; std::string category; bool defaultValue; std::wstring desription;};
+struct SettingsEntryInt{ std::string name; std::string category; int defaultValue;std::wstring desription; std::vector<int> options;};
+struct SettingsEntryWString{ std::string name; std::string category; std::wstring defaultValue;std::wstring desription; StringType type; std::vector<std::wstring> options;};
 
 /// @brief template for settings acess point passed to all classes to have acces to them
 class SettingsLinkAP{
@@ -29,9 +32,9 @@ class SettingsLinkGP{
 
 /// @brief template for settings
 class SettingsLink : public SettingsLinkAP, public SettingsLinkGP{
-    public: virtual void createBoolEntry(std::string name,std::string category,bool defaultValue) = 0;
-    public: virtual void createIntEntry(std::string name,std::string category,int defaultValue,std::vector<int> options = {} ) = 0;
-    public: virtual void createWStringEntry(std::string name,std::string category,std::wstring defaultValue,std::vector<std::wstring> options = {}) = 0;
+    public: virtual void createBoolEntry(std::string name,std::string category,bool defaultValue,std::wstring desription) = 0;
+    public: virtual void createIntEntry(std::string name,std::string category,int defaultValue,std::wstring desription,std::vector<int> options = {} ) = 0;
+    public: virtual void createWStringEntry(std::string name,std::string category,std::wstring defaultValue,std::wstring desription,StringType type = PLAIN ,std::vector<std::wstring> options = {}) = 0;
 
     public: virtual void save() = 0;
 

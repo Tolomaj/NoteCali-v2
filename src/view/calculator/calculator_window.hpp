@@ -8,7 +8,6 @@
 #include <QTextBlock>
 #include <QTextDocument>
 #include <QFontMetrics>
-#include <QDebug>
 
 #include "calculator_boady.hpp"
 #include "calculator_header.hpp"
@@ -29,6 +28,8 @@ class CalculatorWindow: public QMainWindow {
 public: 
 
     CalculatorWindow(SettingsLinkAP * settings, CalculatorWindowLink * controller){
+
+
         this->settings = settings;
         this->controller = controller;
         this->resize(250,330);
@@ -53,7 +54,7 @@ public:
 
     };
 
-    void present(std::vector<MathSolutionLine>* solved_lines) { calculator_boady->present(solved_lines); };
+    void present(std::vector<mline> * separated_lines) { calculator_boady->present(separated_lines); };
     void highlite(std::vector<MathHighlite>* highlites) { calculator_boady->highlite(highlites);  };
 
     void reloadStyles(){

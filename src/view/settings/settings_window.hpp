@@ -9,7 +9,6 @@
 #include <QTextBlock>
 #include <QTextDocument>
 #include <QFontMetrics>
-#include <QDebug>
 #include <sstream>
 #include <string>
 #include <algorithm>
@@ -23,21 +22,24 @@
 #include "settings_cathegory.hpp"
 
 
-
 #ifndef SETTINGS_WIN_GUARD
 #define SETTINGS_WIN_GUARD
+
+#include "settings_hint.hpp"
 
 class CathegoryList;
 
 ///GUI_Window : Objekt hlavního okna vytváří hlavní rozložení ovladacích prvků.
 class SettingsWindow: public QMainWindow { 
     CathegoryList * cathegory_list;
-    QLayout * layout;
+    QHBoxLayout * layout;
+    QVBoxLayout * layout2;
     SettingsWindowLink * controller;
     SettingsLinkAP *settings;
     std::vector<CathegoryPage*> categories;
     QWidget * actual_page;
     QWidget * page_not_selected;
+    SettingsHint * settings_hint;
 
     CathegoryPage * addCathegory(std::string cathegory_name);
 

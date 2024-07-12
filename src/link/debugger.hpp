@@ -11,6 +11,11 @@
 #define CLR_CYN "\e[0;36m"
 #define CLR_REDB "\e[41m"
 
+#ifdef _WIN32
+#define CLEAR "cls"
+#else //In any other OS
+#define CLEAR "clear"
+#endif
 
 #if DEBUG == 2
 #define dbgLog(str) std::cout << __FILE__ << "/" << __LINE__ << ": " << str << std::endl;

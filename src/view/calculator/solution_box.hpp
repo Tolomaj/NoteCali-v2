@@ -8,72 +8,34 @@
 #include <QTextBlock>
 #include <QTextDocument>
 #include <QFontMetrics>
-#include <QDebug>
 #include <iostream>
 #include <vector>
 #include <QScrollArea>
 
+
+#include "../../link/debugger.hpp"
 #include "../../link/math_link.hpp"
+#include "solution_line.hpp"
 
 #pragma once
-
-class SolutionLine : public QWidget{
-    QBoxLayout * layout;
-    QLabel * text;
-    QLabel * variable;
-    QLabel * error;
-    QLabel * information;
-public:
-    SolutionLine() : QWidget(){
-        layout = new QBoxLayout(QBoxLayout::Direction::LeftToRight,this);
-        layout->setSpacing(0);
-        layout->setContentsMargins(0,0,0,0);
-
-        text = new QLabel("AA");
-        text->setAlignment(Qt::AlignCenter);
-        layout->addWidget(text);
-
-        // todo crete as images
-        variable = new QLabel("📝");
-            variable->hide();
-            layout->addWidget(variable);
-        error = new QLabel("⚠️");
-            error->hide();
-            layout->addWidget(error);
-        information = new QLabel("ℹ️");
-            information->hide();
-            layout->addWidget(information);
-
-        this->setContentsMargins(2,0,2,0);
-    }
-
-    void setWidth(int size){
-       text->setFixedHeight(size);
-    }
-
-    void setSolution(MathSolutionLine * solution){
-        //todo inplement whole solutions
-        std::cout << "set solutionn: " << solution->solution << std::endl;
-        text->setText(QString::fromStdString(solution->solution));
-
-        solution->isVariable ? variable->show() :variable->hide();
-        solution->isError ? error->show() : error->hide();
-        solution->isInformation ? information->show() : information->hide();
-    }
-
-};
 
 class SolutionBox : public QScrollArea { 
 public: 
     QBoxLayout * layout;
     SolutionLine * line;
     QWidget *parent;
+    QFont * font = nullptr;
+    SettingsLinkAP * settings;
+    bool clickCopyable;
+    bool copy_rounded;
 
     std::vector<SolutionLine*> lines;
 
-    SolutionBox(QWidget *parent = 0) : QScrollArea(parent){
-
+    SolutionBox(SettingsLinkAP * settings,QWidget *parent = 0) : QScrollArea(parent){
+        this->settings = settings;
         this->parent = parent;
+        this->clickCopyable = settings->getBool("ClickToCopy");
+        this->copy_rounded = settings->getBool("CopyRounded");
 
         layout = new QBoxLayout(QBoxLayout::Direction::TopToBottom,this);
         layout->setAlignment(Qt::AlignTop);
@@ -90,21 +52,27 @@ public:
 
         this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-
-
-        /*QScrollArea* scrollArea = new QScrollArea;
-        scrollArea->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-        scrollArea->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
-        scrollArea->setWidgetResizable( true );
-        scrollArea->setWidget( this );
-
-        scrollArea->setLayout(layout);
-        scrollArea->setWidget(this);*/
-
     };
 
+    void setFont(QFont * font){
+        this->font = font;
+        for (size_t i = 0; i < layout->count(); i++){
+            SolutionLine * line = (SolutionLine*)(layout->itemAt(i)->widget());
+            line->setFont(*font);
+        }  
+    }
+
+    void setCopy(bool clickCopyable,bool copyRounded){
+        this->clickCopyable = clickCopyable;
+        this->copy_rounded = copyRounded;
+        for (size_t i = 0; i < layout->count(); i++){
+            SolutionLine * line = (SolutionLine*)(layout->itemAt(i)->widget());
+            line->setCopy(clickCopyable,copyRounded);
+        }  
+    }
+
     /// nastaví počet řešení
-    void setCount(int i){
+    void setCount(int i){       
         int linesNeed = i - lines.size();
         bool add = true;
         if(linesNeed == 0){ return; };
@@ -113,7 +81,10 @@ public:
 
         for (size_t i = 0; i < linesNeed; i++){
             if(add){
-                SolutionLine * line = new SolutionLine();
+                SolutionLine * line = new SolutionLine(this,this->clickCopyable,this->copy_rounded );
+                if(font != nullptr){
+                    line->setFont(*font);
+                }
                 lines.push_back(line);
                 layout->addWidget(line);
             }else{
@@ -123,6 +94,7 @@ public:
                 delete line;
             }
         }  
+        std::cout << "epos4" << std::endl;
     }
 
     void setWidth(int index, int height){
@@ -133,11 +105,11 @@ public:
         }
     }
 
-    void setSolution(int index, MathSolutionLine * solution){
+    void setSolution(int index, mline * solved_line){
         if(layout->count() > index){
             SolutionLine *widget = (SolutionLine*)(layout->itemAt(index)->widget());
             if(widget == NULL){ return; }
-            widget->setSolution(solution);
+            widget->setSolution(solved_line);
         }
     }
 

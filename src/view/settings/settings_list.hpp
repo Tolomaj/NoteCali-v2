@@ -8,7 +8,6 @@
 #include <QTextBlock>
 #include <QTextDocument>
 #include <QFontMetrics>
-#include <QDebug>
 #include <sstream>
 #include <string>
 #include <algorithm>
@@ -34,11 +33,13 @@ public slots:
 public: 
     CathegoryList(SettingsWindow *parent = 0) : QFrame(parent){
         this->parent = parent;
-        this->setFrameStyle(QFrame::Panel | QFrame::Raised);
+        this->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 
         QBoxLayout * layoutA = new QBoxLayout(QBoxLayout::Direction::TopToBottom,this);
         layoutA->setAlignment(Qt::AlignHCenter);
 
+
+            
 
         QPixmap pixelmap("assets/icon.ico");
 

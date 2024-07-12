@@ -8,7 +8,6 @@
 #include <QTextBlock>
 #include <QTextDocument>
 #include <QFontMetrics>
-#include <QDebug>
 #include <sstream>
 #include <string>
 #include <algorithm>
@@ -19,17 +18,30 @@
 
 #pragma once
 
-class CathegoryPage : public QWidget { 
+class CathegoryPage : public QScrollArea { 
     SettingsWindowLink *settings_link;
     std::string name;
     QLayout * layout;
 public: 
-    CathegoryPage(SettingsWindowLink *settings_link,std::string name){
+    CathegoryPage(SettingsWindowLink *settings_link,std::string name,QWidget *parent = 0) : QScrollArea(parent){
         this->settings_link = settings_link;
         this->name = name;
-        layout =  new QBoxLayout(QBoxLayout::Direction::TopToBottom);
-        this->setLayout(layout);
-        this->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+
+        this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        this->setWidgetResizable(true);
+        this->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+
+        layout =  new QBoxLayout(QBoxLayout::Direction::TopToBottom,this);
+        layout->setAlignment(Qt::AlignTop);
+
+        this->setWidgetResizable(true);
+
+        QWidget* entryes = new QWidget();
+        entryes->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+        
+        entryes->setLayout(layout);
+        this->setWidget(entryes);
+
         layout->addWidget(new QLabel(QString::fromStdString(name),this));
     };
 

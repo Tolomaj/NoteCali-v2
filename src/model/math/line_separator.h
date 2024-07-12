@@ -4,7 +4,7 @@
 #include <string>
 #include "../../link/debugger.hpp"
 #include "../../link/settings_link.hpp"
-#include "ObjectDefinitions.h"
+#include "../../link/math_link.hpp"
 
 using namespace std;
 
@@ -12,16 +12,16 @@ class LineSeparator {
 
     SettingsLinkAP * settings;
 
+    vector<mline> lines;
+
     void registerLine(wstring* iline, bool isCompleted = true);
 
 public:
     LineSeparator(SettingsLinkAP * settings);
 
-	vector<mline> lines;
-
     void printLines();
 
-    void procesInput(wstring* str);
+    vector<mline> * procesInput(wstring* str);
 
 };
 
@@ -32,7 +32,6 @@ LineSeparator::LineSeparator(SettingsLinkAP * settings){
 
 void LineSeparator::registerLine(wstring* iline, bool isCompleted) {
     mline separatedLine;
-    separatedLine.originLine = *iline;
     separatedLine.isEnded = isCompleted;
     if ((iline->size() > 0 && iline->at(0) != L';') || iline->size() == 0) { // neobsahuje ; na prvn�m a nen� tud� command
         if (settings->getBool("UseLineModifiers")) {
@@ -84,7 +83,7 @@ void LineSeparator::printLines() {
     std::cout << "╚END" << CLR_NC << std::endl;
 };
 
-void LineSeparator::procesInput(wstring* str) { //used from stackowerflow https://stackoverflow.com/questions/13172158/c-split-string-by-line
+vector<mline> * LineSeparator::procesInput(wstring* str) { //used from stackowerflow https://stackoverflow.com/questions/13172158/c-split-string-by-line
     lines.clear();
 
     size_t pos = 0;
@@ -108,4 +107,6 @@ void LineSeparator::procesInput(wstring* str) { //used from stackowerflow https:
         a = str->substr(prev);
         registerLine(&a, false);
     }
+
+    return &lines;
 };

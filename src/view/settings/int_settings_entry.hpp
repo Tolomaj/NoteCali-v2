@@ -9,7 +9,6 @@
 #include <QTextBlock>
 #include <QTextDocument>
 #include <QFontMetrics>
-#include <QDebug>
 #include <sstream>
 #include <string>
 #include <algorithm>
@@ -27,7 +26,7 @@ Q_OBJECT
     SettingsWindowLink *settings_link;
     SettingsLinkAP *settings;
     
-    QSpinBox * box;
+    QWidget * box;
     QLabel * label;
 
 public slots:
@@ -53,8 +52,17 @@ public:
         label = new QLabel(QString::fromStdString(name));
         layout->addWidget(label);
         
-        box = new QSpinBox();
-        box->setValue(settings->getInt(name));
+        if(options.size() == 3){
+            QSlider * sbox = new QSlider(Qt::Horizontal);
+            sbox->setValue(settings->getInt(name));
+            box = sbox;
+        }else{
+            QSpinBox * sbox = new QSpinBox();
+            sbox->setValue(settings->getInt(name));
+            box = sbox;
+        }
+
+
         layout->addWidget(box);
 
 

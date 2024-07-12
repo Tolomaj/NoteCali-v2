@@ -11,7 +11,6 @@
 #include <QFrame>
 #include "solution_box.hpp"
 #include <iostream>
-#include <QDebug>
 #include <sstream>
 #include <string>
 
@@ -68,12 +67,6 @@ public slots:
         std::vector<std::wstring>lines = this->getLines();
         this->sincSolutions(&lines);
 
-        for (size_t i = 0; i < lines.size(); i++){
-            std::wstring line = lines.at(i);
-            MathSolutionLine solution;
-            solution.solution = std::string( line.begin(), line.end() );
-            solution_box->setSolution(i,&solution);
-        }
         controller->solve(&lines);
         text->style()->pixelMetric(QStyle::PM_ScrollBarExtent);
     }
@@ -82,7 +75,7 @@ public:
     CalcBody(SettingsLinkAP * settings, CalculatorWindowLink * controller) : QSplitter(Qt::Horizontal){
         this->settings = settings;
         this->controller = controller;
-        font = QFont("Helvetica", 15);
+        font = QFont(QString::fromStdWString(settings->getWString("Font")) , settings->getInt("FontSize"));
 
         this->setContentsMargins(0,0,0,0);
         this->setChildrenCollapsible(false);
@@ -101,7 +94,8 @@ public:
 
 
 
-        solution_box = new SolutionBox(this);
+        solution_box = new SolutionBox(settings,this);
+        solution_box->setFont(&font);
         solution_box->setMinimumWidth(20);
         solution_box->setFrameStyle(QFrame::NoFrame);
         solution_box->setContentsMargins(5,0,5,0);
@@ -125,9 +119,11 @@ public:
 
     };
 
-    void present(std::vector<MathSolutionLine>* solved_lines) {
+    void present(std::vector<mline> * separated_lines) {
 
-        
+        for (size_t i = 0; i < separated_lines->size(); i++){
+            solution_box->setSolution(i,&separated_lines->at(i));
+        }
         //todo
     };
     
@@ -137,6 +133,20 @@ public:
 
     // nastavý styli elementů 
     void reloadStyles(){
+
+        float line_pos = settings->getInt("LineDefaultPosition")/100.0;
+
+        font = QFont(QString::fromStdWString(settings->getWString("Font")) , settings->getInt("FontSize"));
+        text->setFont(font);
+        solution_box->setFont(&font);
+        solution_box->setCopy(settings->getBool("ClickToCopy"),settings->getBool("CopyRounded"));
+
+        QList<int> Sizes;
+        Sizes.append(line_pos * sizeHint().height());
+        Sizes.append((1.0-line_pos) * sizeHint().height());
+        this->setSizes(Sizes);
+
+        
         if(settings->getBool("FloatingDivider")){
             this->setStyleSheet(R"(
                 QSplitter::handle {
