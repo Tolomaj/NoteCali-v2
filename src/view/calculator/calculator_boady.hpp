@@ -147,10 +147,12 @@ public:
         this->setSizes(Sizes);
 
         
+        
+
         if(settings->getBool("FloatingDivider")){
             this->setStyleSheet(R"(
                 QSplitter::handle {
-                    background-color:#3DAEE9; 
+                    background-color:)" + QString::fromStdWString(settings->getWString("LineColor")) + R"(; 
                     margin-top:40px;
                     margin-bottom:40px;
                     border-radius: 3px; 
@@ -164,7 +166,7 @@ public:
         }else{
             this->setStyleSheet(R"(
                 QSplitter::handle {
-                    background-color:#3DAEE9; 
+                    background-color:)" + QString::fromStdWString(settings->getWString("LineColor")) + R"(; 
                     margin-top:40px;
                     border-top-left-radius: 3px; 
                     border-top-right-radius: 3px;

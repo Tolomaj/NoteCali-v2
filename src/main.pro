@@ -17,3 +17,4 @@ HEADERS += view/settings/bool_settings_entry.hpp
 HEADERS += view/settings/int_settings_entry.hpp
 HEADERS += view/settings/wstring_settings_entry.hpp
 HEADERS += view/settings/font_string_settings_entry.hpp
+HEADERS += view/settings/color_string_settings_entry.hpp

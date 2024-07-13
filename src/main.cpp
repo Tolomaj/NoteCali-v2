@@ -35,6 +35,7 @@ int main(int argc, char **argv) {
     settings->createWStringEntry("Theme","Style",L"Auto",L"",COMBO,{L"Dark",L"Light",L"Manual"});
     settings->createIntEntry("FontSize","Style",0,L"",{0,40});
     settings->createWStringEntry("Font","Style",L"Helvetica",L"",FONT);
+    settings->createWStringEntry("LineColor","Style",L"#3DAEE9;",L"",COLOR);
 
 
     settings->createBoolEntry("UseLineModifiers","Calculation",true,L"");

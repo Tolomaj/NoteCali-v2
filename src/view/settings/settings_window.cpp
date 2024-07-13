@@ -4,6 +4,7 @@
 #include "int_settings_entry.hpp"
 #include "wstring_settings_entry.hpp"
 #include "font_string_settings_entry.hpp"
+#include "color_string_settings_entry.hpp"
 
 
 CathegoryPage * SettingsWindow::addCathegory(std::string cathegory_name){
@@ -95,6 +96,9 @@ void SettingsWindow::loadSettings(SettingsLinkGP * settingsGP){
             page->add_to_page(entry);
         }else if(entryWString.type == FONT){
             QWidget * entry = new FontStringEntry(controller,settings,entryWString.name);
+            page->add_to_page(entry);
+        }else if(entryWString.type == COLOR){
+            QWidget * entry = new ColorStringEntry(controller,settings,entryWString.name);
             page->add_to_page(entry);
         }
         
