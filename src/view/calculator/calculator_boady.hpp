@@ -83,7 +83,7 @@ public:
         text = new QTextEdit();
         text->setMinimumWidth(40);
         text->setFrameStyle(QFrame::NoFrame);
-        text->setHtml(QString::fromStdWString(L"- helo this is🥰 anĎ lÓng teČt helo😀"));
+        //text->setHtml(QString::fromStdWString(L"- helo this is🥰 anĎ lÓng teČt helo😀"));
         text->setFont(font);
         text->setStyleSheet("background-color:transparent;");
         text->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);

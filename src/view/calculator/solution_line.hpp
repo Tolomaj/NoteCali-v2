@@ -37,7 +37,7 @@ public:
         layout->setSpacing(0);
         layout->setContentsMargins(0,0,0,0);
 
-        text = new QLabel("AA");
+        text = new QLabel("NOT_SET");
         text->setAlignment(Qt::AlignCenter);
         text->setTextInteractionFlags(Qt::TextSelectableByMouse);
         layout->addWidget(text);
