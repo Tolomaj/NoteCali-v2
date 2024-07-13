@@ -6,7 +6,7 @@
 
 class CalculatorWindowLink{
     public: virtual void close_calculator() = 0;
-    public: virtual void openSettings() = 0;
+    public: virtual void toggleSettings() = 0;
     public: virtual void solve(std::vector<std::wstring> * lines) = 0;
 };
 

@@ -53,6 +53,11 @@ public:
 
     void openCathegory(std::string cathegoryName);
 
+    void closeEvent (QCloseEvent *event){
+       controller->close_settings();
+    }
+
+
     // add delete
 
 };

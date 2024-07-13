@@ -34,9 +34,7 @@ public:
         }
     };
 
-    void openSettings() override {
-
-
+    void toggleSettings() override {
 
         if(settings_window == nullptr){
             settings_window = new SettingsWindow(settings,this);
@@ -45,6 +43,12 @@ public:
             delete settings_window;
             settings_window = nullptr;
         }
+    };
+
+
+    /// @brief interface form SettingsWindowLink
+    void close_settings() override {
+        toggleSettings();
     };
 
     void solve(std::vector<std::wstring> * lines) override {
@@ -92,10 +96,6 @@ public:
         calculator_window->present(separated_lines);
     };
 
-    /// @brief interface form SettingsWindowLink
-    void close_settings() override {
-        //todo
-    };
 
     void onSettingsChangeUpdate(std::string name){
         //std::string cathegory = settings->get_cathegory(name);

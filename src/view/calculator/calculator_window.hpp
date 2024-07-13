@@ -90,7 +90,7 @@ public:
         
         if(keyAlt[0] == true && keyAlt[1] == true){
             keyAlt[0] = keyAlt[1] = false;
-            controller->openSettings();
+            controller->toggleSettings();
         }
     }
 
@@ -98,5 +98,10 @@ public:
         if(e->key()==Qt::Key_Alt){ keyAlt[0] = false; }
         if(e->key()==Qt::Key_AltGr){ keyAlt[1] = false; }      
     }
+
+    void closeEvent (QCloseEvent *event){
+       controller->close_calculator();
+    }
+
 
 };

@@ -94,7 +94,6 @@ public:
                 delete line;
             }
         }  
-        std::cout << "epos4" << std::endl;
     }
 
     void setWidth(int index, int height){

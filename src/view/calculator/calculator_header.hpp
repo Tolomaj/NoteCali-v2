@@ -37,7 +37,7 @@ Q_OBJECT
 
 public slots:
     void close_clicked(){      controller->close_calculator(); }
-    void settings_clicked(){   controller->openSettings();     }
+    void settings_clicked(){   controller->toggleSettings();     }
     void minimalise_clicked(){ parentWindow->setWindowState(Qt::WindowMinimized); }
 
     void pin_clicked(){ 

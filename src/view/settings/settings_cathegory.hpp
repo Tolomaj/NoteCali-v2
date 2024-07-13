@@ -30,6 +30,7 @@ public:
         this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         this->setWidgetResizable(true);
         this->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+        this->setMinimumHeight(20);
 
         layout =  new QBoxLayout(QBoxLayout::Direction::TopToBottom,this);
         layout->setAlignment(Qt::AlignTop);
@@ -41,8 +42,6 @@ public:
         
         entryes->setLayout(layout);
         this->setWidget(entryes);
-
-        layout->addWidget(new QLabel(QString::fromStdString(name),this));
     };
 
     std::string getName(){
