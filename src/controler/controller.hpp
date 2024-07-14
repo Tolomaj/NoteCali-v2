@@ -7,6 +7,7 @@
 
 #include "../model/math/line_separator.h"
 #include "../model/math/math_solver.h"
+#include "../model/math/highliter.h"
 
 
 
@@ -17,6 +18,7 @@ private:
     SettingsLink * settings;
     LineSeparator * line_separator;
     MatematicalSolver * math_solver;
+    MathHighliter *math_highliter;
     //algorithm
 public:
     Controller(SettingsLink * settings){
@@ -24,6 +26,7 @@ public:
         calculator_window = new CalculatorWindow(settings,this);
         line_separator = new LineSeparator(settings);
         math_solver = new MatematicalSolver(settings);
+        math_highliter = new MathHighliter(settings);
     };
 
     /// @brief interface form CalculatorWindowLink
@@ -94,6 +97,12 @@ public:
         )
 
         calculator_window->present(separated_lines);
+
+        if(settings->getBool("UseHighliting")){
+            std::vector<MathHighlite> * highlites = math_highliter->procesHighlite(&linesAll);
+            calculator_window->highlite(highlites);
+        };
+
     };
 
 

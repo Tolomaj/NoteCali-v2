@@ -25,7 +25,7 @@ const wchar_t forbidentVariableSimbols[VARIABLE_FORBIDENT_SIMBOLS_LENGHT] = { '[
 
 #define FAST_SAME false
 
-#define POINTER_CHAR L"@"
+#define POINTER_CHAR L"@" // must be same in separator (line 58)
 
 
 class MatematicalSolver {
@@ -200,6 +200,11 @@ int MatematicalSolver::solve(vector<mline>* lines) {
                 lines->at(i).completlySolved = true;
             }
         };
+
+        // if line has 'h' modifier (hide) set paraeter
+        if (lines->at(i).lineModifier.find(L'h') != string::npos) {
+            lines->at(i).isHiden = true;
+        }
 
         if (lines->at(i).lineModifier != L"") {
             setDefaultMathRules();

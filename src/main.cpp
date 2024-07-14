@@ -36,12 +36,14 @@ int main(int argc, char **argv) {
     settings->createIntEntry("FontSize","Style",0,L"",{0,40});
     settings->createWStringEntry("Font","Style",L"Helvetica",L"",FONT);
     settings->createWStringEntry("LineColor","Style",L"#3DAEE9;",L"",COLOR);
+    settings->createBoolEntry("UseHighliting","Style",true,L"");
 
 
     settings->createBoolEntry("UseLineModifiers","Calculation",true,L"");
     settings->createBoolEntry("UseMetrics","Calculation",false,L"");
     settings->createBoolEntry("UseRadians","Calculation",false,L"");
     settings->createBoolEntry("UseSumVariable","Calculation",true,L"");
+    settings->createBoolEntry("AllowLineJump","Calculation",true,L"");
 
 
     settings->createBoolEntry("separated_lines","Calculation",true,L"");

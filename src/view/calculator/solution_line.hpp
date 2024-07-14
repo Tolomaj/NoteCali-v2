@@ -81,11 +81,18 @@ public:
 
     ///@brief present solution on to line
     void setSolution(mline * solution){
-        //todo inplement whole solutions
         
         // save solutions texts for ClickCopy
         this->no_round_solution = solution->solutionNoRound;
         this->round_solution = solution->solution;
+
+        if(solution->isHiden){
+            // if hiden hide solution and all simbols
+            text->setText("");
+            error->hide();
+            variable->hide();
+            return;
+        }
 
         if(solution->isError){
             // if is error only show Error Symbol
@@ -97,7 +104,7 @@ public:
             error->hide();
 
             // if solution is variable also show variable symbol
-            (solution->localVariableName != L"") ? variable->show() :variable->hide();
+            (solution->localVariableName != L"") ? variable->show() : variable->hide();
         }
     }
 

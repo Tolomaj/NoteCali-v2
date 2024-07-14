@@ -30,7 +30,7 @@ struct mline {
 };
 
 /// @brief struct that defines part in text hat is defined [//todo]
-enum HightlightType{ RED, BLUE, RED_BOLD};
+enum HightlightType{ COMMNET, COMMAND, MODIFIER, VARIABLE, JUMP};
 struct MathHighlite{
     HightlightType type;
     int start, stop;

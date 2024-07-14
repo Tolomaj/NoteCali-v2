@@ -55,7 +55,7 @@ void LineSeparator::registerLine(wstring* iline, bool isCompleted) {
         return;
     }
 
-    size_t space = iline->find_first_of(L" +-*/%^<>=!&|");
+    size_t space = iline->find_first_of(L" +-*/%^<>=!&|()123456890@");
 
     if (space == string::npos) {
         separatedLine.command = iline->substr(1, iline->length());

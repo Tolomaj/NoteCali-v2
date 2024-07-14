@@ -30,6 +30,12 @@ private:
     CalculatorWindowLink * controller;
     SettingsLinkAP * settings;
 
+    QTextCharFormat comment;
+    QTextCharFormat modifier;
+    QTextCharFormat command;
+    QTextCharFormat variable;
+    QTextCharFormat jump;
+
     void sincSolutions(std::vector<std::wstring> * lines){      
         solution_box->setCount(lines->size());
 
@@ -116,19 +122,50 @@ public:
             text->verticalScrollBar()->setValue(value);
         });
 
-
+        comment.setForeground(Qt::darkGreen);
+        modifier.setForeground(Qt::darkGray);
+        modifier.setFontItalic(true);
+        command.setForeground(Qt::darkYellow);
+        variable.setForeground(Qt::darkBlue);
+        jump.setForeground(Qt::darkCyan);
     };
 
     void present(std::vector<mline> * separated_lines) {
-
         for (size_t i = 0; i < separated_lines->size(); i++){
             solution_box->setSolution(i,&separated_lines->at(i));
         }
-        //todo
     };
     
     void highlite(std::vector<MathHighlite>* highlites) {
-        //todo
+        text->blockSignals(true);
+
+        // clear all highliting
+        QTextCursor cursor(text->document());
+        cursor.setPosition(0, QTextCursor::MoveAnchor);
+        cursor.setPosition(text->toPlainText().length(), QTextCursor::KeepAnchor);
+        cursor.setCharFormat(QTextCharFormat());
+
+        // highlite sections
+        for (size_t i = 0; i < highlites->size(); i++){
+
+            QTextCursor cursor(text->document());
+            cursor.setPosition(highlites->at(i).start, QTextCursor::MoveAnchor);
+            cursor.setPosition(highlites->at(i).stop, QTextCursor::KeepAnchor);
+
+            if(highlites->at(i).type == COMMAND){
+                cursor.setCharFormat(command);
+            }else if(highlites->at(i).type == COMMNET){
+                cursor.setCharFormat(comment);
+            }else if(highlites->at(i).type == VARIABLE){
+                cursor.setCharFormat(variable);
+            }else if(highlites->at(i).type == MODIFIER){
+                cursor.setCharFormat(modifier);
+            }else if(highlites->at(i).type == JUMP){
+                cursor.setCharFormat(jump);
+            }
+            
+        }
+        text->blockSignals(false);
     };
 
     // nastavý styli elementů 
@@ -146,7 +183,11 @@ public:
         Sizes.append((1.0-line_pos) * sizeHint().height());
         this->setSizes(Sizes);
 
-        
+        // clear all highliting
+        QTextCursor cursor(text->document());
+        cursor.setPosition(0, QTextCursor::MoveAnchor);
+        cursor.setPosition(text->toPlainText().length(), QTextCursor::KeepAnchor);
+        cursor.setCharFormat(QTextCharFormat());
         
 
         if(settings->getBool("FloatingDivider")){
