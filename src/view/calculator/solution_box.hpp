@@ -56,9 +56,9 @@ public:
 
     void setFont(QFont * font){
         this->font = font;
-        for (size_t i = 0; i < layout->count(); i++){
+        for (int i = 0; i < layout->count(); i++){
             SolutionLine * line = (SolutionLine*)(layout->itemAt(i)->widget());
-            line->setFont(*font);
+            line->setFont(font);
         }  
     }
 
@@ -83,7 +83,7 @@ public:
             if(add){
                 SolutionLine * line = new SolutionLine(this,this->clickCopyable,this->copy_rounded );
                 if(font != nullptr){
-                    line->setFont(*font);
+                    line->setFont(font);
                 }
                 lines.push_back(line);
                 layout->addWidget(line);

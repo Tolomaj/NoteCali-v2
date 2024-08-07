@@ -2,3 +2,5 @@
 /output/main
 /.vscode
 /gitignore
+src/Makefile
+src/.qmake.stash

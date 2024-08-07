@@ -25,6 +25,8 @@ class SolutionLine : public QWidget{
     QLabel * variable;
     QLabel * error;
     QLabel * information;
+    QWidget *parent;
+    QFont * usedFont = nullptr;
     
     bool clickCopyable = true;
     bool copy_rounded = false;
@@ -32,6 +34,8 @@ class SolutionLine : public QWidget{
     std::wstring round_solution;
 public:
     SolutionLine(QWidget *parent,bool clickCopyable,bool copy_rounded) : QWidget(parent){
+        this->parent = parent;
+
         std::cout << "epos02" << std::endl;
         layout = new QBoxLayout(QBoxLayout::Direction::LeftToRight,this);
         layout->setSpacing(0);
@@ -62,8 +66,9 @@ public:
        text->setFixedHeight(size);
     }
 
-    void setFont(QFont & font){
-        text->setFont(font);
+    void setFont(QFont * font){
+        usedFont = font;
+        text->setFont(*font);
     }
 
 
@@ -77,6 +82,9 @@ public:
             text->setTextInteractionFlags(Qt::NoTextInteraction);
         }
     }
+
+
+    // todo add option to remove resizing option
 
 
     ///@brief present solution on to line
@@ -99,6 +107,26 @@ public:
             error->show();
             text->setText("");
         }else{
+
+            //resize solution to fit solution line
+            if(usedFont != nullptr){
+                QFontMetrics metrics = QFontMetrics(*usedFont);
+                QRect rect = metrics.boundingRect(QString::fromStdWString(solution->solution));
+
+                int w = this->parent->geometry().width()-20;
+                float ratio = (float)w/rect.width();
+                if(ratio >= 1){
+                    ratio = 1;
+                }
+
+                //std::cout << CLR_REDB << "bound-> A:" << w << " B:" << rect.width() << " ration:" << ratio << CLR_NC << std::endl;
+
+                QFont f = *usedFont;
+                f.setPointSizeF(f.pointSizeF()*ratio);
+                text->setFont(f);
+            }
+
+
             // if not error show solution & hide error symbol
             text->setText(QString::fromStdWString(solution->solution));
             error->hide();

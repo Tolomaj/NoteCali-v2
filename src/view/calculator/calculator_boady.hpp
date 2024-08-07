@@ -44,10 +44,17 @@ private:
         QRect rct = text->geometry();
         rct.setWidth(rct.width() - 8 );
 
+        std::cout << CLR_REDB << "with I:" << lines->size() << CLR_NC << std::endl;
+
+
         for (size_t i = 0; i < lines->size(); i++){
             std::wstring line = lines->at(i);
-            QRect rect = text->fontMetrics().boundingRect(rct, Qt::AlignLeft | Qt::TextWordWrap , QString::fromStdWString(line));
+            QRect rect = text->fontMetrics().boundingRect(rct, Qt::AlignJustify | Qt::AlignLeft | Qt::TextWrapAnywhere , QString::fromStdWString(line));
+            std::cout << CLR_REDB << "as I:" << i << " metrics:" << rect.height()  << " - " << rect.width() << " fline:";
+            std::wcout << line;
+            std::cout << " rctw:" << rct.width() << " rcth:" << rct.height() << CLR_NC << std::endl;
             solution_box->setWidth(i,rect.height());
+            
         }
     }
 
