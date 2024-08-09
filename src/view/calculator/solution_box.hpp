@@ -28,6 +28,7 @@ public:
     SettingsLinkAP * settings;
     bool clickCopyable;
     bool copy_rounded;
+    bool solution_scaling;
     int line_count = 0;
 
     std::vector<SolutionLine*> lines;
@@ -37,6 +38,7 @@ public:
         this->parent = parent;
         this->clickCopyable = settings->getBool("ClickToCopy");
         this->copy_rounded = settings->getBool("CopyRounded");
+        this->solution_scaling = settings->getBool("ScaleSolutions");
 
         layout = new QBoxLayout(QBoxLayout::Direction::TopToBottom,this);
         layout->setAlignment(Qt::AlignTop);
@@ -66,11 +68,20 @@ public:
     void setCopy(bool clickCopyable,bool copyRounded){
         this->clickCopyable = clickCopyable;
         this->copy_rounded = copyRounded;
-        for (size_t i = 0; i < layout->count(); i++){
+        for (int i = 0; i < layout->count(); i++){
             SolutionLine * line = (SolutionLine*)(layout->itemAt(i)->widget());
             line->setCopy(clickCopyable,copyRounded);
         }  
     }
+
+    void setScaling(bool solution_scaling){
+        this->solution_scaling = solution_scaling;
+        for (int i = 0; i < layout->count(); i++){
+            SolutionLine * line = (SolutionLine*)(layout->itemAt(i)->widget());
+            line->setScaling(solution_scaling);
+        }  
+    }
+
 
     /// nastaví počet řešení
     void setCount(int i){     
@@ -81,9 +92,9 @@ public:
         if(linesNeed < 0){ add = false;}
         linesNeed = abs(linesNeed);
 
-        for (size_t i = 0; i < linesNeed; i++){
+        for (int i = 0; i < linesNeed; i++){
             if(add){
-                SolutionLine * line = new SolutionLine(this,this->clickCopyable,this->copy_rounded );
+                SolutionLine * line = new SolutionLine(this,this->clickCopyable,this->copy_rounded, this->solution_scaling );
                 if(font != nullptr){
                     line->setFont(font);
                 }

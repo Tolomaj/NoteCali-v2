@@ -122,7 +122,7 @@ public:
  
         this->reloadStyles();
 
-        /* todo scroll sinc*/
+        /* todo scroll sinc lst character bug*/
         connect(text->verticalScrollBar(), &QScrollBar::valueChanged, [this](int value){
             solution_box->verticalScrollBar()->setValue(value);
             
@@ -192,6 +192,7 @@ public:
         text->setFont(font);
         solution_box->setFont(&font);
         solution_box->setCopy(settings->getBool("ClickToCopy"),settings->getBool("CopyRounded"));
+        solution_box->setScaling(settings->getBool("ScaleSolutions"));
 
         QList<int> Sizes;
         Sizes.append(line_pos * sizeHint().height());

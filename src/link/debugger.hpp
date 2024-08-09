@@ -16,6 +16,7 @@
 #define CLR_MAG "\e[0;35m"
 #define CLR_CYN "\e[0;36m"
 #define CLR_REDB "\e[41m"
+#define CLR_REDLB "\e[101m"
 
 #ifdef _WIN32
 #define CLEAR "cls"

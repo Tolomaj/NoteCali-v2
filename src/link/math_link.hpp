@@ -29,7 +29,7 @@ struct mline {
 	std::wstring solutionModifier = L""; // not copiable coment to solution
 };
 
-/// @brief struct that defines part in text hat is defined [//todo]
+/// @brief struct that defines part in text hat is defined
 enum HightlightType{ COMMNET, COMMAND, MODIFIER, VARIABLE, JUMP};
 struct MathHighlite{
     HightlightType type;

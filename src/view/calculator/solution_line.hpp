@@ -30,10 +30,11 @@ class SolutionLine : public QWidget{
     
     bool clickCopyable = true;
     bool copy_rounded = false;
+    bool scaling = true;
     std::wstring no_round_solution;
     std::wstring round_solution;
 public:
-    SolutionLine(QWidget *parent,bool clickCopyable,bool copy_rounded) : QWidget(parent){
+    SolutionLine(QWidget *parent,bool clickCopyable,bool copy_rounded,bool scaling) : QWidget(parent){
         this->parent = parent;
 
         layout = new QBoxLayout(QBoxLayout::Direction::LeftToRight,this);
@@ -51,13 +52,17 @@ public:
             information->hide();
             layout->addWidget(information);
 
+
+        //todo center text verticali
         text = new QLabel("NOT_SET");
         text->setAlignment(Qt::AlignCenter);
+
         text->setTextInteractionFlags(Qt::TextSelectableByMouse);
         layout->addWidget(text);
 
 
         this->setCopy(clickCopyable,copy_rounded);
+        this->setScaling(scaling);
         this->setContentsMargins(2,0,2,0);
     }
 
@@ -82,34 +87,33 @@ public:
         }
     }
 
+    ///@brief set scaling behavior
+    void setScaling(bool scaling){
+        this->scaling = scaling;
+    }
 
-    //todo add option to remove resizing option
     void resizeSolution(){
         //resize solution to fit solution line
-        if(usedFont != nullptr){
+        if(usedFont != nullptr && this->scaling == true){
 
-            QFontMetrics metrics = QFontMetrics(*usedFont);
-            QRect rect = metrics.boundingRect(text->text());
+            // get size of original text
+            QRect rect = QFontMetrics(*usedFont).boundingRect(text->text());
 
-            int w = this->parent->geometry().width()-20;
+            // calculate haw many symbols are displayed for calculating margin of text
+            int symbol_num = (!variable->isHidden() + !error->isHidden() + !information->isHidden());
+            int w = this->parent->geometry().width() - rect.height()*symbol_num;
             float ratio = (float)w/rect.width();
 
-            //text is not alowed to be bigger than seted font
-            if(ratio >= 1){
-                ratio = 1;
-            }else if(ratio <= 0.05){
-                ratio = 0.05;
-            }
+            //text is not alowed to be bigger than seted font so (1 >= x > 0.5)
+            if(ratio >= 1)   { ratio = 1;    }else 
+            if(ratio <= 0.05){ ratio = 0.05; }
 
-            dbg(
-                std::cout << "bound:" << w << "/" << rect.width() << " as:" << ratio << std::endl;
-            )
+            dbg(  std::cout << "bound:" << w << "/" << rect.width() << " as:" << ratio << " pad:" << symbol_num << std::endl;  )
 
             QFont f = *usedFont;
             f.setPointSizeF(f.pointSizeF()*ratio);
             text->setFont(f);
         }
-
     }
 
 
@@ -121,8 +125,8 @@ public:
         this->no_round_solution = solution->solutionNoRound;
         this->round_solution = solution->solution;
 
+        // if hiden hide solution and all simbols
         if(solution->isHiden){
-            // if hiden hide solution and all simbols
             text->setText("");
             error->hide();
             variable->hide();
@@ -132,7 +136,6 @@ public:
         if(solution->isError){
             //todo add option to hide error text
             text->setText(QString::fromStdWString(solution->solution));
-
             error->show();
         }else{
 
@@ -147,11 +150,9 @@ public:
 
         dbg(
             std::string modi = "";
-
             if(!variable->isHidden())   { modi.append("📝"); }
             if(!error->isHidden())      { modi.append("⚠️"); }
             if(!information->isHidden()){ modi.append("ℹ️");  }
-            if(modi == ""){ modi = "none"; }
 
             std::cout << "text:[" << text->text().toStdString() << "] modifiers:[" << modi << "] ";
         )
@@ -171,6 +172,5 @@ public:
             }
         }
     }
-
 
 };

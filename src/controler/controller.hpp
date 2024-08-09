@@ -37,8 +37,8 @@ public:
         }
     };
 
+    /// @brief toggle settings window (used fro buttons in calculator)
     void toggleSettings() override {
-
         if(settings_window == nullptr){
             settings_window = new SettingsWindow(settings,this);
             settings_window->loadSettings(settings);
@@ -56,7 +56,7 @@ public:
     void solve(std::vector<std::wstring> * lines) override {
 
         std::wstring linesAll; 
-        
+
         for (size_t i = 0; i < lines->size(); i++){
             linesAll += lines->at(i) + L"\n";
 
@@ -73,7 +73,6 @@ public:
             std::cout << CLR_BLE << "└──────────────────────────────────────────┘" << CLR_NC << std::endl;
             line_separator->printLines();
         )
-
 
         math_solver->solve(separated_lines);
 
@@ -102,9 +101,10 @@ public:
             calculator_window->highlite(highlites);
         };
 
+        dbg(  std::cout << CLR_BLE << "░░░░░░░░░░░░░LINE SOLWING ENDED░░░░░░░░░░░░░" << CLR_NC << std::endl;  )
     };
 
-
+    /// @brief updates styles after settings changed.
     void onSettingsChangeUpdate(std::string name){
         //std::string cathegory = settings->get_cathegory(name);
         //if(cathegory == "Style"){
@@ -136,6 +136,5 @@ public:
         //todo
         std::cout << "settingSpecial " << name << std::endl;
     };
-
 
 };

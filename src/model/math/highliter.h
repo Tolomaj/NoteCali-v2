@@ -20,12 +20,14 @@ public:
 };
 
 
+
+
 MathHighliter::MathHighliter(SettingsLinkAP * settings){
     this->settings = settings;
 }
 
 std::vector<MathHighlite>* MathHighliter::procesHighlite(wstring* text) {
-        //todo add highlight " to "
+        //todo add highlight " to " and "sum"
         highlites.clear();
         MathHighlite highlite;
 
@@ -84,7 +86,7 @@ std::vector<MathHighlite>* MathHighliter::procesHighlite(wstring* text) {
         line_start = 0;
         std::wstring list_of_chars = std::wstring(L" +-*/%^<>=!&|()123456890@\n");
         std::wstring list_of_nums = std::wstring(L"123456890");
-        enum eat_cmd_state { start, command, not_command, jump};
+        enum eat_cmd_state { start, command, not_command, jump, cmd_to, cmd_TO};
         eat_cmd_state state_cmd;
 
         // highlite commands
@@ -125,6 +127,10 @@ std::vector<MathHighlite>* MathHighliter::procesHighlite(wstring* text) {
                     line_start = i;
                     state_cmd = jump;
                 }
+                if(text->at(i) == 't' && settings->getBool("UseMetrics")){
+                    line_start = i;
+                    state_cmd = cmd_to;
+                }
                 break;
             case jump:
                 if(list_of_nums.find(text->at(i)) == std::string::npos || i == text->size()){
@@ -139,8 +145,28 @@ std::vector<MathHighlite>* MathHighliter::procesHighlite(wstring* text) {
                     state_cmd = start;
                 }
                 break;
+                case cmd_to:
+                    if(text->at(i) == 'o'){
+                        state_cmd = cmd_TO;
+                    }else{
+                        state_cmd = not_command;
+                    }
+                break;
+                case cmd_TO:
+                    if(text->at(i) == ' '){
+                        highlite.start = line_start;
+                        highlite.stop = i;
+                        highlite.type = COMMAND;
+                        highlites.push_back(highlite);
+                    }
+                    state_cmd = not_command;
+                    
+                break;
             }
         }
+
+
+
 
         return &highlites;
 }

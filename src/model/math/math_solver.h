@@ -138,7 +138,6 @@ void MatematicalSolver::calculateSumForLinesAbove(int lineNum) {
             ////todo dbgLog("suma pro linku - " + to_string(lineNum) + " : " + parser.stack[0].value.ToString());
         } else {
             ////todo dbgLog("error sumarizace - " + to_string(lineNum) + " : ",false);
-            ////todo dbgLog(lineFormula);
         }
 
     }
@@ -159,7 +158,7 @@ int MatematicalSolver::solve(vector<mline>* lines) {
     if (settings->getBool("UseSumVariable")) {
         varTable.Add("sum", "0");
     };
-    
+
     for (size_t i = 0; i < lines->size(); i++) {
 
         // linka obsahuje příkaz co ukončí řešení momentální linky
@@ -213,7 +212,6 @@ int MatematicalSolver::solve(vector<mline>* lines) {
     }
     lineUsingMetrics = false;
     varTable = systemVariableTable;
-    //todo dbgLog("<---- SOLVING LINES DONE ---->");
    
     return 0;
 }
@@ -285,8 +283,6 @@ int MatematicalSolver::solveLine(wstring line, wstring* solution, wstring* solut
 
 
             wstring lineFormula = L"(" + fnum + L")*60+" + snum;
-
-
 
 
             wstring solution = L"";
@@ -533,6 +529,12 @@ bool MatematicalSolver::solveVariableLine(mline* line, int eqPos) {
         return false;
     }
 
+    // if use metrics disalow variables named to. (it calls error but )
+    if (settings->getBool("UseMetrics") && beforeEQ == L"to") {
+        creteErrorLineSolution(line, L"Variable name conflicts with to operator", MATHERR_INVALID_VARIABLE_NAME);
+        return false;
+    }
+
     wstring errorText = L"Math Err";
 
     if (solveLine(afterEQ, &line->solution,&line->solutionNoRound, &errorText) != 0) { // is is error
@@ -703,6 +705,7 @@ bool MatematicalSolver::isValidVariableName(wstring name) { // var neobsahuje []
             }
         }
     }
+
     return true;
 }
 

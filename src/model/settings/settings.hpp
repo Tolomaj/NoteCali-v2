@@ -37,7 +37,7 @@ public:
                     return entry.defaultValue;
                 }
             } 
-            //todo dbgErr("no entry found for: " + name);
+            dbg( std::cout << CLR_REDLB << "no entry found for:" << name << CLR_NC << std::endl; )
         }
         return val.toBool();
     };
@@ -50,7 +50,7 @@ public:
                     return entry.defaultValue;
                 }
             } 
-            //todo dbgErr("no entry found for: " + name);
+            dbg( std::cout << CLR_REDLB << "no entry found for:" << name << CLR_NC << std::endl; )
         }
         return val.toInt();
     };
@@ -63,7 +63,7 @@ public:
                     return entry.defaultValue;
                 }
             } 
-            //todo dbgErr("no entry found for: " + name);
+            dbg( std::cout << CLR_REDLB << "no entry found for:" << name << CLR_NC << std::endl; )
         }
         return val.toString().toStdWString();
     };
@@ -130,7 +130,7 @@ public:
             }
         } 
         
-        //todo dbgErr("no entry found for: " + name);
+        dbg( std::cout << CLR_REDLB << "no entry found for:" << name << CLR_NC << std::endl; )
         return "";
     }
 };

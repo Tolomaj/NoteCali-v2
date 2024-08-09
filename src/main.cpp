@@ -35,6 +35,7 @@ int main(int argc, char **argv) {
     settings->createWStringEntry("Font","Style",L"Helvetica",L"",FONT);
     settings->createWStringEntry("LineColor","Style",L"#3DAEE9;",L"",COLOR);
     settings->createBoolEntry("UseHighliting","Style",true,L"");
+    settings->createBoolEntry("ScaleSolutions","Style",true,L"");
 
 
     settings->createBoolEntry("UseLineModifiers","Calculation",true,L"");
@@ -55,6 +56,7 @@ int main(int argc, char **argv) {
     
     settings->createBoolEntry("ClickToCopy","Calculation",true,L"on Click solution is saved to clipboard.\n Otherwise text become selectable and you must select & press ctrl+C to copy solution");
     settings->createBoolEntry("CopyRounded","Calculation",false,L"When copying by clcking copy rounded solution (exact what is shownd). \nOtherwise use more acurate value");
+
 
 
     Controller * controller = new Controller(settings);

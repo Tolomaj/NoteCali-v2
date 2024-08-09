@@ -26,6 +26,8 @@ public:
 };
 
 
+
+
 LineSeparator::LineSeparator(SettingsLinkAP * settings){
     this->settings = settings;
 }
