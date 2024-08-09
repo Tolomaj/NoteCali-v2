@@ -11,9 +11,7 @@
 #include <iostream>
 #include <QFontDialog>
 
-
-#define DEBUG 2
-
+// set debug level in this library
 #include "link/debugger.hpp"
 #include "link/math_link.hpp"
 #include "model/settings/settings.hpp"

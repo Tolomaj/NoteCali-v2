@@ -28,6 +28,7 @@ public:
     SettingsLinkAP * settings;
     bool clickCopyable;
     bool copy_rounded;
+    int line_count = 0;
 
     std::vector<SolutionLine*> lines;
 
@@ -72,7 +73,8 @@ public:
     }
 
     /// nastaví počet řešení
-    void setCount(int i){       
+    void setCount(int i){     
+        line_count = i;  
         int linesNeed = i - lines.size();
         bool add = true;
         if(linesNeed == 0){ return; };
@@ -97,10 +99,12 @@ public:
     }
 
     void setWidth(int index, int height){
+        
         if(layout->count() > index){
             SolutionLine *widget = (SolutionLine*)(layout->itemAt(index)->widget());
             if(widget == NULL){ return; }
             widget->setWidth(height);
+            widget->resizeSolution();
         }
     }
 

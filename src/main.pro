@@ -9,7 +9,6 @@ SOURCES += view/settings/settings_window.cpp
 
 HEADERS = view/calculator/calculator_boady.hpp
 HEADERS += view/calculator/calculator_header.hpp
-HEADERS += view/calculator/solution_box.hpp
 
 HEADERS += view/settings/settings_list.hpp
 HEADERS += view/settings/settings_window.hpp

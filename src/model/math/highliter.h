@@ -25,7 +25,7 @@ MathHighliter::MathHighliter(SettingsLinkAP * settings){
 }
 
 std::vector<MathHighlite>* MathHighliter::procesHighlite(wstring* text) {
-        
+        //todo add highlight " to "
         highlites.clear();
         MathHighlite highlite;
 

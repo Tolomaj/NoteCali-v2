@@ -14,7 +14,7 @@
 #include <sstream>
 #include <string>
 
-#include "../../link/debugger.hpp"
+//#include "../../link/debugger.hpp"
 #include "../../link/math_link.hpp"
 #include "../../link/window_link.hpp"
 #include "../../link/settings_link.hpp"
@@ -36,7 +36,10 @@ private:
     QTextCharFormat variable;
     QTextCharFormat jump;
 
-    void sincSolutions(std::vector<std::wstring> * lines){      
+
+    void sincSolutions(std::vector<std::wstring> * lines){ 
+        dbg( std::cout << CLR_CYN << "RESINCHRONIZACE LINEK:" << std::endl; )
+
         solution_box->setCount(lines->size());
 
         // resize solutions
@@ -44,18 +47,20 @@ private:
         QRect rct = text->geometry();
         rct.setWidth(rct.width() - 8 );
 
-        std::cout << CLR_REDB << "with I:" << lines->size() << CLR_NC << std::endl;
-
 
         for (size_t i = 0; i < lines->size(); i++){
             std::wstring line = lines->at(i);
             QRect rect = text->fontMetrics().boundingRect(rct, Qt::AlignJustify | Qt::AlignLeft | Qt::TextWrapAnywhere , QString::fromStdWString(line));
-            std::cout << CLR_REDB << "as I:" << i << " metrics:" << rect.height()  << " - " << rect.width() << " fline:";
-            std::wcout << line;
-            std::cout << " rctw:" << rct.width() << " rcth:" << rct.height() << CLR_NC << std::endl;
+
+            dbg(
+                std::cout << "╠═ line(" << i <<")» h:" << rect.height()  << " w:" << rect.width() << " line:";
+                std::wcout << line;
+                std::cout << " solution h:" << rct.height() << " w:" << rct.width() << " ";
+            )
+
             solution_box->setWidth(i,rect.height());
-            
         }
+        dbg( std::cout << "╚END" << CLR_NC << std::endl; )
     }
 
     std::vector<std::wstring> getLines(){
@@ -72,9 +77,6 @@ private:
 
 public slots:
 
-    void resized(){
-
-    }
 
     void onTextChanged(){
         std::vector<std::wstring>lines = this->getLines();
@@ -138,9 +140,15 @@ public:
     };
 
     void present(std::vector<mline> * separated_lines) {
+        dbg( std::cout << CLR_GRN << "PREZENTOVANÉ LINKY:" << std::endl;  )
+
         for (size_t i = 0; i < separated_lines->size(); i++){
+            dbg( std::cout << "╠═ line(" << i << ")» "; )
+
             solution_box->setSolution(i,&separated_lines->at(i));
         }
+
+        dbg( std::cout << "╚END" << CLR_NC << std::endl; )
     };
     
     void highlite(std::vector<MathHighlite>* highlites) {

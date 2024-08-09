@@ -159,9 +159,7 @@ int MatematicalSolver::solve(vector<mline>* lines) {
     if (settings->getBool("UseSumVariable")) {
         varTable.Add("sum", "0");
     };
-
-    //todo dbgLog("<------ SOLVING LINES ------>");
-
+    
     for (size_t i = 0; i < lines->size(); i++) {
 
         // linka obsahuje příkaz co ukončí řešení momentální linky

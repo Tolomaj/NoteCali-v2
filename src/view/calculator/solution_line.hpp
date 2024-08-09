@@ -12,7 +12,7 @@
 #include <vector>
 #include <QScrollArea>
 
-#include "../../link/debugger.hpp"
+//#include "../../link/debugger.hpp"
 #include "../../link/math_link.hpp"
 #include "../../link/settings_link.hpp"
 
@@ -36,15 +36,9 @@ public:
     SolutionLine(QWidget *parent,bool clickCopyable,bool copy_rounded) : QWidget(parent){
         this->parent = parent;
 
-        std::cout << "epos02" << std::endl;
         layout = new QBoxLayout(QBoxLayout::Direction::LeftToRight,this);
         layout->setSpacing(0);
         layout->setContentsMargins(0,0,0,0);
-
-        text = new QLabel("NOT_SET");
-        text->setAlignment(Qt::AlignCenter);
-        text->setTextInteractionFlags(Qt::TextSelectableByMouse);
-        layout->addWidget(text);
 
         // todo crete as images
         variable = new QLabel("📝");
@@ -56,6 +50,11 @@ public:
         information = new QLabel("ℹ️");
             information->hide();
             layout->addWidget(information);
+
+        text = new QLabel("NOT_SET");
+        text->setAlignment(Qt::AlignCenter);
+        text->setTextInteractionFlags(Qt::TextSelectableByMouse);
+        layout->addWidget(text);
 
 
         this->setCopy(clickCopyable,copy_rounded);
@@ -84,7 +83,35 @@ public:
     }
 
 
-    // todo add option to remove resizing option
+    //todo add option to remove resizing option
+    void resizeSolution(){
+        //resize solution to fit solution line
+        if(usedFont != nullptr){
+
+            QFontMetrics metrics = QFontMetrics(*usedFont);
+            QRect rect = metrics.boundingRect(text->text());
+
+            int w = this->parent->geometry().width()-20;
+            float ratio = (float)w/rect.width();
+
+            //text is not alowed to be bigger than seted font
+            if(ratio >= 1){
+                ratio = 1;
+            }else if(ratio <= 0.05){
+                ratio = 0.05;
+            }
+
+            dbg(
+                std::cout << "bound:" << w << "/" << rect.width() << " as:" << ratio << std::endl;
+            )
+
+            QFont f = *usedFont;
+            f.setPointSizeF(f.pointSizeF()*ratio);
+            text->setFont(f);
+        }
+
+    }
+
 
 
     ///@brief present solution on to line
@@ -103,29 +130,11 @@ public:
         }
 
         if(solution->isError){
-            // if is error only show Error Symbol
+            //todo add option to hide error text
+            text->setText(QString::fromStdWString(solution->solution));
+
             error->show();
-            text->setText("");
         }else{
-
-            //resize solution to fit solution line
-            if(usedFont != nullptr){
-                QFontMetrics metrics = QFontMetrics(*usedFont);
-                QRect rect = metrics.boundingRect(QString::fromStdWString(solution->solution));
-
-                int w = this->parent->geometry().width()-20;
-                float ratio = (float)w/rect.width();
-                if(ratio >= 1){
-                    ratio = 1;
-                }
-
-                //std::cout << CLR_REDB << "bound-> A:" << w << " B:" << rect.width() << " ration:" << ratio << CLR_NC << std::endl;
-
-                QFont f = *usedFont;
-                f.setPointSizeF(f.pointSizeF()*ratio);
-                text->setFont(f);
-            }
-
 
             // if not error show solution & hide error symbol
             text->setText(QString::fromStdWString(solution->solution));
@@ -133,7 +142,22 @@ public:
 
             // if solution is variable also show variable symbol
             (solution->localVariableName != L"") ? variable->show() : variable->hide();
+ 
         }
+
+        dbg(
+            std::string modi = "";
+
+            if(!variable->isHidden())   { modi.append("📝"); }
+            if(!error->isHidden())      { modi.append("⚠️"); }
+            if(!information->isHidden()){ modi.append("ℹ️");  }
+            if(modi == ""){ modi = "none"; }
+
+            std::cout << "text:[" << text->text().toStdString() << "] modifiers:[" << modi << "] ";
+        )
+
+        //resize solution to fit solution line
+        this->resizeSolution();
     }
 
 
@@ -145,7 +169,6 @@ public:
             }else{
                 QGuiApplication::clipboard()->setText(QString::fromStdWString(this->no_round_solution));
             }
-            
         }
     }
 

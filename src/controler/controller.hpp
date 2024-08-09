@@ -67,7 +67,7 @@ public:
         vector<mline> * separated_lines = line_separator->procesInput(&linesAll);
 
         dbg(
-            //system(CLEAR);
+            system(CLEAR);
             std::cout << CLR_BLE << "┌──────────────────────────────────────────┐" << CLR_NC << std::endl;
             std::cout << CLR_BLE << "│░░░░░░░░░░░░LINE SOLWING START░░░░░░░░░░░░│" << CLR_NC << std::endl;
             std::cout << CLR_BLE << "└──────────────────────────────────────────┘" << CLR_NC << std::endl;
