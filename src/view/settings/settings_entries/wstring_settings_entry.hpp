@@ -16,15 +16,13 @@
 #include <iostream>
 #include <vector>
 
-#include "../../link/settings_link.hpp"
-#include "../../link/window_link.hpp"
+#include "base_entry.hpp"
+#pragma once
+
 
 ///GUI_Window : Objekt hlavního okna vytváří hlavní rozložení ovladacích prvků.
-class WStringEntry : public QFrame { 
+class WStringEntry : public EntryTemplate { 
 Q_OBJECT
-    std::string name;
-    SettingsWindowLink *settings_link;
-    SettingsLinkAP *settings;
 
     QLineEdit * text;
     QBoxLayout * layout;
@@ -38,13 +36,7 @@ public slots:
 
 public: 
   
-    WStringEntry(SettingsWindowLink *settings_link,SettingsLinkAP *settings, std::string name) : QFrame(){
-        this->name = name;
-        this->settings = settings;
-        this->settings_link = settings_link;
-
-        this->setFrameStyle(QFrame::Panel);
-        this->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
+    WStringEntry(SettingsWindowLink *settings_link,SettingsLinkAP *settings, std::string name,std::wstring description) : EntryTemplate(settings_link,settings,name,description){
 
         layout = new QBoxLayout(QBoxLayout::Direction::LeftToRight,this);
 
@@ -56,8 +48,6 @@ public:
         label->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
         layout->addWidget(label);
         
-        //connect(this, QCheckBox::toggled, this, SLOT(toggled(int)));
-        //connect(text, SIGNAL(textChanged()), this, SLOT(changed()));
         connect(text, SIGNAL(textChanged(const QString &)), this, SLOT(changed(const QString &)));
 
     };

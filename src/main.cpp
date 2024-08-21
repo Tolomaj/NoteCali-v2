@@ -27,6 +27,8 @@ int main(int argc, char **argv) {
 
     /* test area */
 
+    //todo přidat podmíněné nastavení (musí být true jinak je to podmíněné vypnuté)
+
     settings->createBoolEntry("NativeTitleBar","Style",false,L"Use System Native Window Title Bar");
     settings->createBoolEntry("FloatingDivider","Style",false,L"");
     settings->createIntEntry("LineDefaultPosition","Style",70,L"",{0,2,100});

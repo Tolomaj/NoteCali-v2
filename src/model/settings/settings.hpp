@@ -22,7 +22,7 @@ class Settings : public SettingsLink {
 public:
 
     Settings(QString file){
-        settings = new QSettings(file,QSettings::NativeFormat);
+        settings = new QSettings(file,QSettings::IniFormat);
     }
 
     void save() override {
@@ -30,7 +30,7 @@ public:
     };
 
     bool getBool(std::string name) override {
-        QVariant val = settings->value(name);
+        QVariant val = settings->value(QString::fromStdString(name));
         if(val.isNull()){
            for (SettingsEntryBool & entry : boolSettngsList) {
                 if(entry.name == name){
@@ -43,7 +43,7 @@ public:
     };
 
     int getInt(std::string name) override {
-        QVariant val = settings->value(name);
+        QVariant val = settings->value(QString::fromStdString(name));
         if(val.isNull()){
            for (SettingsEntryInt & entry : intSettngsList) {
                 if(entry.name == name){
@@ -56,7 +56,7 @@ public:
     };
 
     std::wstring getWString(std::string name) override{
-        QVariant val = settings->value(name);
+        QVariant val = settings->value(QString::fromStdString(name));
         if(val.isNull()){
            for (SettingsEntryWString & entry : wstringSettngsList) {
                 if(entry.name == name){
@@ -102,15 +102,16 @@ public:
     };
 
     void setBool(std::string name,bool value) override {
-        settings->setValue(name,value);
+        settings->setValue(QString::fromStdString(name),value);
     };
 
     void setInt(std::string name,int value) override {
-        settings->setValue(name,value);
+        settings->setValue(QString::fromStdString(name),value);
     };
 
     void setWString(std::string name,std::wstring value) override {
-        settings->setValue(name,QString::fromWCharArray(value.c_str()));
+        std::wcout << L"nnonec " << std::endl;
+        settings->setValue(QString::fromStdString(name),QString::fromWCharArray(value.c_str()));
     };
 
     std::string get_cathegory(std::string name){

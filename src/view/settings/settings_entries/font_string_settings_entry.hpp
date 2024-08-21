@@ -15,16 +15,13 @@
 #include <iostream>
 #include <vector>
 
-#include "../../link/settings_link.hpp"
-#include "../../link/window_link.hpp"
+#include "base_entry.hpp"
+#pragma once
+
 
 ///GUI_Window : Objekt hlavního okna vytváří hlavní rozložení ovladacích prvků.
-class FontStringEntry : public QFrame { 
+class FontStringEntry : public EntryTemplate { 
 Q_OBJECT
-    std::string name;
-    SettingsWindowLink *settings_link;
-    SettingsLinkAP *settings;
-
     QFontComboBox * font;
     QBoxLayout * layout;
   
@@ -32,19 +29,14 @@ public slots:
 
     void changed(const QFont & font){
         std::wstring wtxt = font.family().toStdWString();
+        std::wcout << L"font changed: " << wtxt << std::endl;
         settings_link->setWString(name,wtxt);
+        std::wcout << L"font changed ende: " << wtxt << std::endl;
     }
 
 public: 
   
-    FontStringEntry(SettingsWindowLink *settings_link,SettingsLinkAP *settings, std::string name) : QFrame(){
-        this->name = name;
-        this->settings = settings;
-        this->settings_link = settings_link;
-
-        this->setFrameStyle(QFrame::Panel);
-        this->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
-
+    FontStringEntry(SettingsWindowLink *settings_link,SettingsLinkAP *settings, std::string name,std::wstring description) : EntryTemplate(settings_link,settings,name,description){
         layout = new QBoxLayout(QBoxLayout::Direction::LeftToRight,this);
 
         font = new QFontComboBox();

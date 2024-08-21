@@ -1,38 +1,22 @@
 #include "settings_window.hpp"
 
-#include "bool_settings_entry.hpp"
-#include "int_settings_entry.hpp"
-#include "wstring_settings_entry.hpp"
-#include "font_string_settings_entry.hpp"
-#include "color_string_settings_entry.hpp"
+#include "settings_entries/bool_settings_entry.hpp"
+#include "settings_entries/int_settings_entry.hpp"
+#include "settings_entries/wstring_settings_entry.hpp"
+#include "settings_entries/font_string_settings_entry.hpp"
+#include "settings_entries/color_string_settings_entry.hpp"
 
-
-CathegoryPage * SettingsWindow::addCathegory(std::string cathegory_name){
-    for(int i = 0; i < categories.size(); i++){
-        CathegoryPage * category = categories.at(i);
-        if(category->getName() == cathegory_name){
-            std::cout << "cathegory already existed" << std::endl;
-            return category;
-        }
-    }
-    cathegory_list->addCathegory(cathegory_name);
-    CathegoryPage * page = new CathegoryPage(controller,cathegory_name,this);
-    page->hide();
-    categories.push_back(page);
-    layout2->addWidget(page);
-
-    if(actual_page == nullptr){
-        page->show();
-        actual_page = page;
-    }
-    
-    return page;
-}
+#include "settings_page.hpp"
 
 SettingsWindow::SettingsWindow(SettingsLinkAP *settings,SettingsWindowLink * controller,QMainWindow *parent) : QMainWindow(parent){
     this->controller = controller;
     this->settings = settings;
     this->resize(450,450);
+
+    // set background color type
+    QPalette palet = qApp->palette();
+    this->setStyleSheet("background: " + palet.color(QPalette::Base).name());
+        
 
     QWidget * centralWidget = new QWidget(this);
     layout = new QHBoxLayout(centralWidget); //new QBoxLayout(QBoxLayout::Direction::LeftToRight,centralWidget);
@@ -40,18 +24,22 @@ SettingsWindow::SettingsWindow(SettingsLinkAP *settings,SettingsWindowLink * con
     layout->setContentsMargins(0,0,0,0);
     this->setCentralWidget(centralWidget);
 
-    cathegory_list = new CathegoryList(this);
+    cathegory_list = new SettingsSidePanel(this);
     cathegory_list->setFixedWidth(100);
     layout->addWidget(cathegory_list);
 
-    actual_page = nullptr;
+    /// testting area
+    pageS = new SettingsPage(controller,settings,this);
+    layout->addWidget(pageS);
 
-    layout2 = new QVBoxLayout(centralWidget);
-
-    settings_hint = new SettingsHint();
-    layout2->addWidget(settings_hint);
-
-    layout->addLayout(layout2);
+    // create help page
+    pageS->add_help_info("test","text");
+    // create variables page
+    pageS->add_to_page((SettingsTextEntry){"This is unfinished Variables page","Variables"});
+    // create AboutApp page
+    pageS->add_to_page((SettingsTextEntry){"This is unfinished about app page","AboutApp"});
+    // create Updates page
+    pageS->add_to_page((SettingsTextEntry){"This is unfinished Updates page","Updates"});
 
     this->reloadStyles();
     this->show();
@@ -60,67 +48,48 @@ SettingsWindow::SettingsWindow(SettingsLinkAP *settings,SettingsWindowLink * con
 void SettingsWindow::loadSettings(SettingsLinkGP * settingsGP){
     int i = 0;
     while(1) {
-        SettingsEntryBool entryBool = settingsGP->getBoolEntry(i);
+        SettingsEntryBool entryBool = settingsGP->getBoolEntry(i);        
+        if(entryBool.name == ""){ break; } 
         i++;
-        if(entryBool.name == ""){ break; }  
-        CathegoryPage * page = addCathegory(entryBool.category);
 
-        BoolEntry * entry = new BoolEntry(controller,settings,entryBool.name);
-        page->add_to_page(entry);
-
+        pageS->add_to_page(entryBool);
     }
 
     i = 0;
     while(1) {
         SettingsEntryInt entryInt = settingsGP->getIntEntry(i);
-        i++;
         if(entryInt.name == ""){ break; }
-        CathegoryPage * page = addCathegory(entryInt.category);
-        
-        //todo few types slider a splinbox by value
-        IntEntry * entry = new IntEntry(controller,settings,entryInt.name,entryInt.options);
-        page->add_to_page(entry);
+        i++;
+
+        pageS->add_to_page(entryInt);
     }
 
     i = 0;
     while(1) {
         SettingsEntryWString entryWString = settingsGP->getWStringEntry(i);
-        i++;
         if(entryWString.name == ""){ break; }
-        CathegoryPage * page = addCathegory(entryWString.category);
+        i++;
 
-        // add dropbox option
-
-        if(entryWString.type == PLAIN){
-            QWidget * entry = new WStringEntry(controller,settings,entryWString.name);
-            page->add_to_page(entry);
-        }else if(entryWString.type == FONT){
-            QWidget * entry = new FontStringEntry(controller,settings,entryWString.name);
-            page->add_to_page(entry);
-        }else if(entryWString.type == COLOR){
-            QWidget * entry = new ColorStringEntry(controller,settings,entryWString.name);
-            page->add_to_page(entry);
-        }
-        
-
+        pageS->add_to_page(entryWString);
     }
+
+    i = 0;
+    while(1) {
+        std::string name = pageS->get_cathegory_name(i);
+        if(name == ""){ break; }
+        i++;
+
+        cathegory_list->addCathegoryButton(name);
+    } 
+
 }
 
+void SettingsWindow::setHint(std::string name, std::wstring description){
+    pageS->setHint(name,description);
+}
 
 void SettingsWindow::openCathegory(std::string cathegory_name) {
-    if(actual_page != nullptr){
-        actual_page->hide();
-    }
-
-    for(int i = 0; i < categories.size(); i++){
-        CathegoryPage * category = categories.at(i);
-
-        if(category->getName() == cathegory_name){
-            category->show();
-            actual_page = category;
-            return;
-        }
-    }
+    this->pageS->open_page(cathegory_name);
 }
 
 void SettingsWindow::reloadStyles(){

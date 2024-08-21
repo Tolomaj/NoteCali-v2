@@ -137,4 +137,8 @@ public:
         std::cout << "settingSpecial " << name << std::endl;
     };
 
+    void setHint(std::string name,std::wstring description){
+        settings_window->setHint(name,description);
+    };
+
 };

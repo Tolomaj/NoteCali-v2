@@ -43,4 +43,5 @@ class SettingsLink : public SettingsLinkAP, public SettingsLinkGP{
     public: virtual void setWString(std::string name,std::wstring value) = 0;
 
     public: virtual std::string get_cathegory(std::string name) = 0;
+
 };

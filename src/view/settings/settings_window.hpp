@@ -18,32 +18,30 @@
 #include "../../link/window_link.hpp"
 #include "../../link/settings_link.hpp"
 
-#include "settings_list.hpp"
+#include "settings_sidepanel.hpp"
 #include "settings_cathegory.hpp"
 
+#include "settings_hint.hpp"
+#include "settings_page.hpp"
 
 #ifndef SETTINGS_WIN_GUARD
 #define SETTINGS_WIN_GUARD
 
-#include "settings_hint.hpp"
 
+
+//predefine used classes
 class CathegoryList;
+class SettingsSidePanel;
 
 ///GUI_Window : Objekt hlavního okna vytváří hlavní rozložení ovladacích prvků.
 class SettingsWindow: public QMainWindow { 
-    CathegoryList * cathegory_list;
+    SettingsSidePanel * cathegory_list;
     QHBoxLayout * layout;
-    QVBoxLayout * layout2;
     SettingsWindowLink * controller;
     SettingsLinkAP *settings;
-    std::vector<CathegoryPage*> categories;
-    QWidget * actual_page;
-    QWidget * page_not_selected;
-    SettingsHint * settings_hint;
-
-    CathegoryPage * addCathegory(std::string cathegory_name);
 
 public: 
+    SettingsPage * pageS;
 
     SettingsWindow(SettingsLinkAP *settings,SettingsWindowLink * controller,QMainWindow *parent = 0);
 
@@ -52,6 +50,8 @@ public:
     void reloadStyles();
 
     void openCathegory(std::string cathegoryName);
+
+    void setHint(std::string name, std::wstring description);
 
     void closeEvent (QCloseEvent *event){
        controller->close_settings();

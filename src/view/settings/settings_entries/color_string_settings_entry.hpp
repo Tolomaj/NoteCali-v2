@@ -15,16 +15,12 @@
 #include <iostream>
 #include <vector>
 
-#include "../../link/settings_link.hpp"
-#include "../../link/window_link.hpp"
+#include "base_entry.hpp"
+#pragma once
 
 ///GUI_Window : Objekt hlavního okna vytváří hlavní rozložení ovladacích prvků.
-class ColorStringEntry : public QFrame { 
+class ColorStringEntry : public EntryTemplate { 
 Q_OBJECT
-    std::string name;
-    SettingsWindowLink *settings_link;
-    SettingsLinkAP *settings;
-
     QFontComboBox * font;
     QBoxLayout * layout;
 
@@ -34,7 +30,7 @@ public slots:
 
     void click(){
 
-        QColor color = QColorDialog::getColor(QColor(QString::fromStdWString(settings->getWString(name))), this,"Pick Color");
+        QColor color = QColorDialog::getColor(QColor(QString::fromStdWString(settings->getWString(this->name))), this,"Pick Color");
 
         settings_link->setWString(name,color.name().toStdWString());
         pb->setStyleSheet("background-color: " + color.name() + " ;");
@@ -42,13 +38,7 @@ public slots:
 
 public: 
   
-    ColorStringEntry(SettingsWindowLink *settings_link,SettingsLinkAP *settings, std::string name) : QFrame(){
-        this->name = name;
-        this->settings = settings;
-        this->settings_link = settings_link;
-
-        this->setFrameStyle(QFrame::Panel);
-        this->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
+    ColorStringEntry(SettingsWindowLink *settings_link,SettingsLinkAP *settings, std::string name,std::wstring description) : EntryTemplate(settings_link,settings,name,description){
 
         layout = new QBoxLayout(QBoxLayout::Direction::LeftToRight,this);
 

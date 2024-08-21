@@ -16,16 +16,12 @@
 #include <iostream>
 #include <vector>
 
-#include "../../link/settings_link.hpp"
-#include "../../link/window_link.hpp"
+#include "base_entry.hpp"
+#pragma once
 
 ///GUI_Window : Objekt hlavního okna vytváří hlavní rozložení ovladacích prvků.
-class BoolEntry : public QFrame { 
+class BoolEntry : public EntryTemplate { 
 Q_OBJECT
-    std::string name;
-    SettingsWindowLink *settings_link;
-    SettingsLinkAP *settings;
-
     QCheckBox * checkbox;
     QBoxLayout * layout;
   
@@ -33,19 +29,13 @@ public slots:
 
     void box_toggled(){
         std::cout << "settbool" << std::endl;
-        settings_link->setBool(name,checkbox->isChecked());
+        this->settings_link->setBool(this->name,checkbox->isChecked());
         //checkbox->setChecked(settings->getBool(name));
     }
 
 public: 
   
-    BoolEntry(SettingsWindowLink *settings_link,SettingsLinkAP *settings, std::string name) : QFrame(){
-        this->name = name;
-        this->settings = settings;
-        this->settings_link = settings_link;
-
-        this->setFrameStyle(QFrame::Panel);
-        this->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
+    BoolEntry(SettingsWindowLink *settings_link,SettingsLinkAP *settings, std::string name,std::wstring description) : EntryTemplate(settings_link,settings,name,description){
 
         layout = new QBoxLayout(QBoxLayout::Direction::LeftToRight,this);
 
@@ -57,7 +47,6 @@ public:
         label->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
         layout->addWidget(label);
         
-        //connect(this, QCheckBox::toggled, this, SLOT(toggled(int)));
         connect(checkbox, SIGNAL(clicked()), this, SLOT(box_toggled()));
 
     };

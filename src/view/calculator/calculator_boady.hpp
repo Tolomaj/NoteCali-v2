@@ -92,7 +92,7 @@ public:
         this->controller = controller;
         font = QFont(QString::fromStdWString(settings->getWString("Font")) , settings->getInt("FontSize"));
 
-        this->setContentsMargins(0,0,0,0);
+        this->setContentsMargins(0,1,0,0);
         this->setChildrenCollapsible(false);
 
         text = new QTextEdit();
@@ -194,6 +194,7 @@ public:
         solution_box->setCopy(settings->getBool("ClickToCopy"),settings->getBool("CopyRounded"));
         solution_box->setScaling(settings->getBool("ScaleSolutions"));
 
+
         QList<int> Sizes;
         Sizes.append(line_pos * sizeHint().height());
         Sizes.append((1.0-line_pos) * sizeHint().height());
@@ -204,15 +205,14 @@ public:
         cursor.setPosition(0, QTextCursor::MoveAnchor);
         cursor.setPosition(text->toPlainText().length(), QTextCursor::KeepAnchor);
         cursor.setCharFormat(QTextCharFormat());
-        
 
         if(settings->getBool("FloatingDivider")){
             this->setStyleSheet(R"(
                 QSplitter::handle {
                     background-color:)" + QString::fromStdWString(settings->getWString("LineColor")) + R"(; 
-                    margin-top:40px;
-                    margin-bottom:40px;
-                    border-radius: 3px; 
+                    margin-top:20px;
+                    margin-bottom:20px;
+                    border-radius: 2px; 
                 }
         
                 QSplitter::handle:vertical {
@@ -224,9 +224,9 @@ public:
             this->setStyleSheet(R"(
                 QSplitter::handle {
                     background-color:)" + QString::fromStdWString(settings->getWString("LineColor")) + R"(; 
-                    margin-top:40px;
-                    border-top-left-radius: 3px; 
-                    border-top-right-radius: 3px;
+                    margin-top:20px;
+                    border-top-left-radius: 2px; 
+                    border-top-right-radius: 2px;
                 }
         
                 QSplitter::handle:vertical {

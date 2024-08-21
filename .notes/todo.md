@@ -1,0 +1,1 @@
+- [] celkově učsat kod

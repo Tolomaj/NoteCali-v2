@@ -66,6 +66,14 @@ public:
         this->setContentsMargins(2,0,2,0);
     }
 
+    ~SolutionLine(){
+        delete layout;
+        delete variable;
+        delete error;
+        delete information;
+        delete text;
+    }
+
     void setWidth(int size){
        text->setFixedHeight(size);
     }
