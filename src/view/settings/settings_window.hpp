@@ -54,7 +54,8 @@ public:
     void setHint(std::string name, std::wstring description);
 
     void closeEvent (QCloseEvent *event){
-       controller->close_settings();
+        Q_UNUSED(event);
+        controller->close_settings();
     }
 
 

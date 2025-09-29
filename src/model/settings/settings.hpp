@@ -24,6 +24,8 @@ public:
     Settings(QString file){
         settings = new QSettings(file,QSettings::IniFormat);
     }
+    
+    virtual ~Settings(){};
 
     void save() override {
         // for this inlementation saving settings is not needed
@@ -82,19 +84,19 @@ public:
         wstringSettngsList.push_back({name,category,defaultValue,desription,type,options});
     };
 
-    SettingsEntryBool getBoolEntry(int i) override {
+    SettingsEntryBool getBoolEntry(size_t i) override {
         if(i >= boolSettngsList.size()){
             return {"","",false};
         }
         return boolSettngsList.at(i);
     };
-    SettingsEntryInt getIntEntry(int i) override {
+    SettingsEntryInt getIntEntry(size_t i) override {
         if(i >= intSettngsList.size()){
             return {"","",0};
         }
         return intSettngsList.at(i);
     };
-    SettingsEntryWString getWStringEntry(int i) override {
+    SettingsEntryWString getWStringEntry(size_t i) override {
         if(i >= wstringSettngsList.size()){
             return {"","",L""};
         }

@@ -41,7 +41,7 @@ class SettingsPage: public QFrame {
 
     CathegoryPage * add_cathegory(std::string cathegory_name){
     // najdeme jestli kategorie už neexistuje pokud ano vrátí jen odkaz
-        for(int i = 0; i < page_list.size(); i++){
+        for(size_t i = 0; i < page_list.size(); i++){
             CathegoryPage * category = page_list.at(i);
             if(category->getName() == cathegory_name){
                 std::cout << "cathegory already existed" << std::endl;
@@ -78,7 +78,7 @@ public:
 
     };
 
-    std::string get_cathegory_name(int i){
+    std::string get_cathegory_name(size_t i){
         if(i >= page_list.size()){
             return "";
         };

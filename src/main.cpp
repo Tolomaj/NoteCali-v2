@@ -45,6 +45,7 @@ int main(int argc, char **argv) {
     settings->createBoolEntry("UseRadians","Calculation",false,L"");
     settings->createBoolEntry("UseSumVariable","Calculation",true,L"");
     settings->createBoolEntry("AllowLineJump","Calculation",true,L"");
+    settings->createBoolEntry("UseNoRoundPointers","Calculation",false,L"When pointing at line use value that is not rounded.");
 
 
     settings->createBoolEntry("separated_lines","Calculation",true,L"");
@@ -59,10 +60,14 @@ int main(int argc, char **argv) {
     settings->createBoolEntry("ClickToCopy","Calculation",true,L"on Click solution is saved to clipboard.\n Otherwise text become selectable and you must select & press ctrl+C to copy solution");
     settings->createBoolEntry("CopyRounded","Calculation",false,L"When copying by clcking copy rounded solution (exact what is shownd). \nOtherwise use more acurate value");
 
-
+    settings->createBoolEntry("UseComma","Calculation",false,L"Solution will be printed (and copied) with , insted of .");
 
     Controller * controller = new Controller(settings);
 
+    // spustíme samotnou aplikaci
+    int ret = app.exec();
 
-    return app.exec(); 
+    delete controller;
+    delete settings;
+    return ret; 
 }

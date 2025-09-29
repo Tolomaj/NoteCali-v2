@@ -84,23 +84,45 @@ public:
         }
     }
 
-    void keyPressEvent(QKeyEvent *e) override{
-        if(e->key()==Qt::Key_Alt){ keyAlt[0] = true; }
-        if(e->key()==Qt::Key_AltGr){ keyAlt[1] = true; }      
-        
-        if(keyAlt[0] == true && keyAlt[1] == true){
-            keyAlt[0] = keyAlt[1] = false;
-            controller->toggleSettings();
-        }
+void keyPressEvent(QKeyEvent *e) override {
+    // Levý Alt
+    if (e->key() == Qt::Key_Alt && !(e->modifiers() & Qt::ControlModifier)) {
+        keyAlt[0] = true;
     }
 
-    void keyReleaseEvent(QKeyEvent *e) override{
-        if(e->key()==Qt::Key_Alt){ keyAlt[0] = false; }
-        if(e->key()==Qt::Key_AltGr){ keyAlt[1] = false; }      
+    // Pravý Alt / AltGr
+    if ((e->key() == Qt::Key_Alt && (e->modifiers() & Qt::ControlModifier)) || e->key() == Qt::Key_AltGr) {
+        keyAlt[1] = true;
     }
+
+    // Pokud jsou oba stisknuté
+    if (keyAlt[0] && keyAlt[1]) {
+        keyAlt[0] = keyAlt[1] = false;
+        controller->toggleSettings();
+    }
+
+    // Volitelně zavolej base class
+    QMainWindow::keyPressEvent(e);
+}
+
+void keyReleaseEvent(QKeyEvent *e) override {
+    // Levý Alt uvolněn
+    if (e->key() == Qt::Key_Alt && !(e->modifiers() & Qt::ControlModifier)) {
+        keyAlt[0] = false;
+    }
+
+    // Pravý Alt / AltGr uvolněn
+    if ((e->key() == Qt::Key_Alt && (e->modifiers() & Qt::ControlModifier)) || e->key() == Qt::Key_AltGr) {
+        keyAlt[1] = false;
+    }
+
+    QMainWindow::keyReleaseEvent(e);
+}
+
 
     void closeEvent (QCloseEvent *event){
-       controller->close_calculator();
+        Q_UNUSED(event);
+        controller->close_calculator();
     }
 
 

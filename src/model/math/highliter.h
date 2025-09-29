@@ -32,9 +32,9 @@ std::vector<MathHighlite>* MathHighliter::procesHighlite(wstring* text) {
         MathHighlite highlite;
 
         enum eat_state { consume, after_comment, consume_a_modi,  is_comment};
-        eat_state state;
+        eat_state state = consume;
 
-        int line_start = 0;
+        size_t line_start = 0;
 
         //highlite comments and modifiers
         for (size_t i = 0; i < text->size(); i++){
@@ -87,7 +87,7 @@ std::vector<MathHighlite>* MathHighliter::procesHighlite(wstring* text) {
         std::wstring list_of_chars = std::wstring(L" +-*/%^<>=!&|()123456890@\n");
         std::wstring list_of_nums = std::wstring(L"123456890");
         enum eat_cmd_state { start, command, not_command, jump, cmd_to, cmd_TO};
-        eat_cmd_state state_cmd;
+        eat_cmd_state state_cmd = start;
 
         // highlite commands
         for (size_t i = 0; i < text->size(); i++){

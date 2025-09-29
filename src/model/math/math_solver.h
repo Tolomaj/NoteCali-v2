@@ -2,6 +2,8 @@
 #include <string>
 #include <cstdio>
 #include <stddef.h>
+#include <regex>
+#include <chrono>
 #include "../../../include/ttmath/ttmath.h"
 #include "../../link/debugger.hpp"
 #include "../../link/settings_link.hpp"
@@ -33,7 +35,7 @@ class MatematicalSolver {
     ttmath::Parser<MyBig> parser;
     ttmath::Objects varTable;
     ttmath::Objects systemVariableTable;
-    ttmath::Objects functionTable;//not used jet
+    ttmath::Objects functionTable;//not used jet // umý jen textové výrazy T_T
     ttmath::Conv ConvertionRole;
     bool lineUsingMetrics;
     SettingsLinkAP * settings;
@@ -41,8 +43,6 @@ class MatematicalSolver {
     vector<mline>* procesedLines;
 
     bool isSameLine(mline* line1, mline* line2);
-
-    bool hasAnyVariable(mline* line);
 
     int findEqualition(wstring* line);// vrátí true když opsahuje samostatné = ,index je hejo pozice
 
@@ -65,6 +65,9 @@ class MatematicalSolver {
     bool setDefaultMathRules();
 
     void calculateSumForLinesAbove( int lineNum);
+
+    //nahradí všechny hodnoty typu 20:50 nebo 2:50 na reprezentaci v sekundách
+    int solveTimeInLine(wstring* line);
 
 public:
     
@@ -216,99 +219,45 @@ int MatematicalSolver::solve(vector<mline>* lines) {
     return 0;
 }
 
+int MatematicalSolver::solveTimeInLine(wstring* line){
+    try{
+        std::wregex timeRegex(LR"((\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)");
+
+        std::wstring result;
+        std::wsregex_iterator it(line->begin(), line->end(), timeRegex);
+        std::wsregex_iterator end;
+
+        size_t lastPos = 0;
+        for (; it != end; ++it) {
+            std::wsmatch match = *it;
+
+            // Přidáme část textu před shodou
+            result.append(line->substr(lastPos, match.position() - lastPos));
+
+            int h = std::stoi(match[1].str());
+            int m = std::stoi(match[2].str());
+            int s = match[3].matched ? std::stoi(match[3].str()) : 0;
+
+            long total = h * 3600 + m * 60 + s;
+            result += std::to_wstring(total);
+
+            lastPos = match.position() + match.length();
+        }
+        // Přidáme zbytek řádku
+        result.append(line->substr(lastPos));
+
+        *line = result;
+        return 0; // nebo můžeš vrátit třeba počet nahrazených časů
+    } catch (...) {
+        return -1; // zachytí jakoukoliv výjimku
+    }
+}
+
 int MatematicalSolver::solveLine(wstring line, wstring* solution, wstring* solutionNoRound,wstring * errorText) { // vyřeší linku která neobsahuje žádné custom věci // později budwe řešit proměné a funkce
     
-    //převod XX:XX na sekundy
-    // vždy rozdělí na dvě části podle : a ty vypočítá nezávysle to se opakuje dokud nezbyde výsledek
+    //převod XX:XX nebo XX:XX:XX na sekundy
     if (settings->getBool("UseTimeFormat")) {
-        size_t ocur2 = line.find(L":");
-        while (ocur2 != wstring::npos) {
-
-            // najdeme levou část před : dokud nenarazí na neuzavřenou ( závorku
-            size_t numStart = ocur2;
-            size_t lenght = 0;
-            int pathcr = 0;
-            while (numStart - lenght != 0 && line[numStart - lenght - 1] != ':') {
-                if (line[numStart - lenght - 1] == ')') {
-                    pathcr++;
-                }
-                if (line[numStart - lenght - 1] == '(') {
-                    if (pathcr == 0) {
-                        break;
-                    }
-                    pathcr--;
-                }
-                lenght++;
-            }
-
-            //najdeme pravou část za : koduk nenarazí na neuzavřenou ) závorku
-            size_t secNumStart = ocur2;
-            size_t secLenght = 0;
-            pathcr = 0;
-            while (secNumStart + secLenght != line.length() && line[secNumStart + secLenght + 1] != ':') {
-                if (line[secNumStart + secLenght + 1] == '(') {
-                    pathcr++;
-                }
-                if (line[secNumStart + secLenght + 1] == ')') {
-                    if (pathcr == 0) {
-                        break;
-                    }
-                    pathcr--;
-                }
-
-                secLenght++;
-            }
-
-            // rosekání mezi : 
-            wstring fnum = line.substr(numStart - lenght, lenght);
-            wstring snum = line.substr(secNumStart + 1, secLenght);
-
-            // prevence abychom nečetli v stringu za koncem
-            wstring afterstring = L"";
-            if (secNumStart + secLenght + 1 <= line.length()) {
-                afterstring = line.substr(secNumStart + secLenght + 1, line.length() - secNumStart + secLenght);
-            }
-
-            // prevence abychom nečetli v stringu za koncem
-            wstring beforestring = L"";
-            if (numStart - lenght > 0) {
-                beforestring = line.substr(0, numStart - lenght);
-            }
-
-            //pokud nějaká část není definovaná potom je 0
-            if (fnum == L"") { fnum = L"0"; }
-            if (snum == L"") { snum = L"0"; }
-
-            // teď je linka rozdělená na:  beforestring ( fnum : snum )?: afterstring  
-
-
-            wstring lineFormula = L"(" + fnum + L")*60+" + snum;
-
-
-            wstring solution = L"";
-            wstring solutionNR = L"";
-            wstring err = L"";
-
-            solveLine(lineFormula, &solution, &solutionNR, &err);
-
-            //ttmath::ErrorCode err = parser.Parse(lineFormula);
-
-            if (err == L"") {
-                line = beforestring + parser.stack[0].value.ToWString() + afterstring;
-                //line.replace(numStart - lenght, lenght + secLenght + 1, parser.stack[0].value.ToWString());
-            }
-            else {
-                *errorText = L"Cant Convert Time";
-                return MATHERR_INVALID_SINTAX;
-            }
-
-            ocur2 = line.find(L":");
-            dbg(
-                std::wcout << L"operator : sekaná linka ->" << beforestring.c_str() << L";" <<  fnum.c_str() << L";" << snum.c_str() << L";" << afterstring.c_str() << std::endl;
-                std::wcout << L"operator : sformulovaná linka->" << lineFormula.c_str() << std::endl;
-                std::wcout << L"operator : poparsovaná linaka->" << line.c_str() << std::endl;
-            )
-        }
+        solveTimeInLine(&line);
     }
 
     if (settings->getBool("UseMetrics") || lineUsingMetrics) { // check to somethink
@@ -383,8 +332,15 @@ int MatematicalSolver::solveLine(wstring line, wstring* solution, wstring* solut
 
     // nastavit řešení
     if (err == 0) {
+
         *solution = parser.stack[0].value.ToWString(ConvertionRole);
         *solutionNoRound = parser.stack[0].value.ToWString();
+
+        // používáme , místo teček
+        if(settings->getBool("UseComma")){
+            for(auto &ch : *solution) { if(ch == L'.') ch = L','; }
+            for(auto &ch : *solutionNoRound) { if(ch == L'.') ch = L','; }
+        }
     }else {
         *errorText = L"Line Unsolvable";
     }
@@ -392,9 +348,9 @@ int MatematicalSolver::solveLine(wstring line, wstring* solution, wstring* solut
     return err;
 }
 
-wstring getNumFrom(wstring * s,int index) {
+wstring getNumFrom(wstring * s,size_t index) {
     wstring num = L"";
-    for (int i = index; i < s->length();i++) {
+    for (size_t i = index; i < s->length();i++) {
         if (iswdigit(s->at(i))) {
             num = num + s->at(i);
         } else {
@@ -508,7 +464,6 @@ bool MatematicalSolver::solveVariableLine(mline* line, int eqPos) {
     wstring beforeEQ = line->line.substr(0, eqPos);
 
     if (settings->getBool("IgnoreHightDiference")) {
-        size_t parCountOP = 0, parCountCL = 0;
         for (size_t i = 0; i < beforeEQ.length(); i++) {
             beforeEQ.at(i) = towlower(beforeEQ.at(i));      //set all characters to small
         }
@@ -649,9 +604,6 @@ void MatematicalSolver::executeMathComand(mline* line) {
 
 
 bool MatematicalSolver::isSameLine(mline* line1, mline* line2) {
-    size_t lineSize1 = line1->line.size();
-    size_t lineSize2 = line2->line.size();
-
     if (line1->line.size() != line2->line.size() || line1->command.size() != line2->command.size()) {
         return false;
     }
@@ -662,13 +614,6 @@ bool MatematicalSolver::isSameLine(mline* line1, mline* line2) {
     return line1->line.compare(line2->line) && line1->command.compare(line2->command);
 
 }
-
-
-
-bool MatematicalSolver::hasAnyVariable(mline* line) {
-    return false;
-}
-
 
 
 int MatematicalSolver::findEqualition(wstring* line) { // vrátí true když opsahuje samostatné = ,index je hejo pozice
@@ -712,6 +657,7 @@ bool MatematicalSolver::isValidVariableName(wstring name) { // var neobsahuje []
 
 
 void MatematicalSolver::creteErrorLineSolution(mline* line, wstring text, int errorCode) {
+    Q_UNUSED(errorCode); // otázkou jestli k něčemu nebude držet si chybový kód // zatím se enpoužívá
     line->completlySolved = false;
     line->isError = true;
     line->solutionModifier = L"ERROR";

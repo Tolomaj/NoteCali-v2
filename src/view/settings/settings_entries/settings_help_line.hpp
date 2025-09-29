@@ -34,7 +34,7 @@ public:
 
         layout = new QBoxLayout(QBoxLayout::Direction::LeftToRight,this);
 
-        QLabel * label = new QLabel(description);
+        QLabel * label = new QLabel(name);
         label->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
         layout->addWidget(label);
       

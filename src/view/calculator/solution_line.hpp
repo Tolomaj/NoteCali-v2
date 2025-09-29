@@ -172,6 +172,7 @@ public:
 
     ///@brief when line clciked & ClickCopy is enabled copy text to clipboard 
     void mousePressEvent(QMouseEvent* event) override {
+        Q_UNUSED(event);
         if(clickCopyable){
             if(copy_rounded){
                 QGuiApplication::clipboard()->setText(QString::fromStdWString(this->round_solution));

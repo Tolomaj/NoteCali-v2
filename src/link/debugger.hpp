@@ -19,9 +19,15 @@
 #define CLR_REDLB "\e[101m"
 
 #ifdef _WIN32
-#define CLEAR "cls"
+inline void clear_terminal() {
+    int ret = system("cls");
+    (void)ret;  // now compiler sees it "used"
+}
 #else //In any other OS
-#define CLEAR "clear"
+inline void clear_terminal() {
+    int ret = system("clear");
+    (void)ret;  // now compiler sees it "used"
+}
 #endif
 
 #if DEBUG_LOG_LEVEL == 2

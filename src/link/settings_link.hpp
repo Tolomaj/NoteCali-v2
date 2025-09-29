@@ -12,9 +12,9 @@ enum StringType{ PLAIN ,COMBO, FONT, COLOR };
 
 
 /// @brief Settings entry (way to get all settings)
-struct SettingsEntryBool{ std::string name; std::string category; bool defaultValue; std::wstring desription;};
-struct SettingsEntryInt{ std::string name; std::string category; int defaultValue;std::wstring desription; std::vector<int> options;};
-struct SettingsEntryWString{ std::string name; std::string category; std::wstring defaultValue;std::wstring desription; StringType type; std::vector<std::wstring> options;};
+struct SettingsEntryBool{ std::string name; std::string category; bool defaultValue; std::wstring desription = L"";};
+struct SettingsEntryInt{ std::string name; std::string category; int defaultValue;std::wstring desription = L""; std::vector<int> options = {};};
+struct SettingsEntryWString{ std::string name; std::string category; std::wstring defaultValue;std::wstring desription  = L""; StringType type = PLAIN; std::vector<std::wstring> options = {};};
 
 /// @brief template for settings acess point passed to all classes to have acces to them
 class SettingsLinkAP{
@@ -25,9 +25,9 @@ class SettingsLinkAP{
 
 /// @brief template for settings getter poin, provide function to get all settings used in app 
 class SettingsLinkGP{
-    public: virtual SettingsEntryBool getBoolEntry(int i) = 0;
-    public: virtual SettingsEntryInt getIntEntry(int i) = 0;
-    public: virtual SettingsEntryWString getWStringEntry(int i) = 0;
+    public: virtual SettingsEntryBool getBoolEntry(size_t i) = 0;
+    public: virtual SettingsEntryInt getIntEntry(size_t i) = 0;
+    public: virtual SettingsEntryWString getWStringEntry(size_t i) = 0;
 };
 
 /// @brief template for settings

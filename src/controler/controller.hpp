@@ -29,6 +29,8 @@ public:
         math_highliter = new MathHighliter(settings);
     };
 
+    virtual ~Controller(){};
+
     /// @brief interface form CalculatorWindowLink
     void close_calculator() override {
         calculator_window->close();
@@ -67,7 +69,7 @@ public:
         vector<mline> * separated_lines = line_separator->procesInput(&linesAll);
 
         dbg(
-            system(CLEAR);
+            clear_terminal();
             std::cout << CLR_BLE << "┌──────────────────────────────────────────┐" << CLR_NC << std::endl;
             std::cout << CLR_BLE << "│░░░░░░░░░░░░LINE SOLWING START░░░░░░░░░░░░│" << CLR_NC << std::endl;
             std::cout << CLR_BLE << "└──────────────────────────────────────────┘" << CLR_NC << std::endl;
@@ -106,6 +108,7 @@ public:
 
     /// @brief updates styles after settings changed.
     void onSettingsChangeUpdate(std::string name){
+        Q_UNUSED(name);
         //std::string cathegory = settings->get_cathegory(name);
         //if(cathegory == "Style"){
             calculator_window->reloadStyles();
