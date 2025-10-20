@@ -23,7 +23,6 @@
 class FontStringEntry : public EntryTemplate { 
 Q_OBJECT
     QFontComboBox * font;
-    QBoxLayout * layout;
   
 public slots:
 
@@ -37,16 +36,12 @@ public slots:
 public: 
   
     FontStringEntry(SettingsWindowLink *settings_link,SettingsLinkAP *settings, std::string name,std::wstring description) : EntryTemplate(settings_link,settings,name,description){
-        layout = new QBoxLayout(QBoxLayout::Direction::LeftToRight,this);
 
         font = new QFontComboBox();
         font->setCurrentFont(QFont(QString::fromStdWString(settings->getWString("Font")) , settings->getInt("FontSize")));
+        font->setContentsMargins(0,0,0,0);
         layout->addWidget(font);
-        
-        QLabel * label = new QLabel(QString::fromStdString(name));
-        label->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
-        layout->addWidget(label);
-        
+ 
         connect(font, SIGNAL(currentFontChanged(const QFont &)), this, SLOT(changed(const QFont &)));
 
     };

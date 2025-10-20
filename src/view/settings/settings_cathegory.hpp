@@ -33,7 +33,9 @@ public:
 
         // set background color type
         //QPalette palet = qApp->palette();
-        //this->setStyleSheet("background: " + palet.color(QPalette::AlternateBase).name());
+        //this->setStyleSheet("background: red");
+        this->setAutoFillBackground(true);
+        this->setBackgroundRole(QPalette::Base);
         
         // set widget behavior
         this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);

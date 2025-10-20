@@ -27,10 +27,10 @@ class SettingsHint : public QFrame{
 public: 
   
     SettingsHint() : QFrame(){
-        //this->setContentsMargins(2,2,2,2);
-
-        QPalette palet = qApp->palette();
-        this->setStyleSheet("background: " + palet.color(QPalette::Window ).name());
+        this->setContentsMargins(2,2,2,2);
+    
+        this->setAutoFillBackground(true);
+        this->setBackgroundRole(QPalette::Highlight);
 
 
         layout = new QBoxLayout(QBoxLayout::Direction::TopToBottom,this);

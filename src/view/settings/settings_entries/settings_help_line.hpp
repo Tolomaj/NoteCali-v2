@@ -28,9 +28,9 @@ public:
         this->setFrameStyle(QFrame::StyledPanel | QFrame::Raised);
         //this->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
 
-        QPalette palet = qApp->palette();
-        QString style = "background: " + palet.color(QPalette::Window).name();
-        this->setStyleSheet(style);
+        // set background color type
+        this->setAutoFillBackground(true);
+        this->setBackgroundRole(QPalette::Window);
 
         layout = new QBoxLayout(QBoxLayout::Direction::LeftToRight,this);
 

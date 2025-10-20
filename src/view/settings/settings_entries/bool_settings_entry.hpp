@@ -23,8 +23,7 @@
 class BoolEntry : public EntryTemplate { 
 Q_OBJECT
     QCheckBox * checkbox;
-    QBoxLayout * layout;
-  
+    
 public slots:
 
     void box_toggled(){
@@ -37,15 +36,11 @@ public:
   
     BoolEntry(SettingsWindowLink *settings_link,SettingsLinkAP *settings, std::string name,std::wstring description) : EntryTemplate(settings_link,settings,name,description){
 
-        layout = new QBoxLayout(QBoxLayout::Direction::LeftToRight,this);
-
         checkbox = new QCheckBox();
         checkbox->setChecked(settings->getBool(name));
         layout->addWidget(checkbox);
+
         
-        QLabel * label = new QLabel(QString::fromStdString(name));
-        label->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
-        layout->addWidget(label);
         
         connect(checkbox, SIGNAL(clicked()), this, SLOT(box_toggled()));
 

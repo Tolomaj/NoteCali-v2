@@ -35,12 +35,19 @@ public:
     SettingsSidePanel(SettingsWindow *parent = 0) : QFrame(parent){
         this->parent = parent;
         
-        QPalette palet = qApp->palette();
-        this->setStyleSheet("background: " + palet.color(QPalette::Base).name());
+        //QPalette palet = qApp->palette();
+        //this->setStyleSheet("background: " + palet.color(QPalette::Base).name());
+
+        // Set background role to Base and enable autoFillBackground
+        this->setAutoFillBackground(true);
+        this->setBackgroundRole(QPalette::AlternateBase);
+        this->setForegroundRole(QPalette::Text);
+        //this->setFrameShape(QFrame::Sunken);
 
         QBoxLayout * layoutA = new QBoxLayout(QBoxLayout::Direction::TopToBottom,this);
         layoutA->setAlignment(Qt::AlignHCenter);
 
+        
         //create app icon
         QPixmap pixelmap("assets/icon.ico");
         QLabel * myLabel = new QLabel();

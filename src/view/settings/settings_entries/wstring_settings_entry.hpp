@@ -25,8 +25,7 @@ class WStringEntry : public EntryTemplate {
 Q_OBJECT
 
     QLineEdit * text;
-    QBoxLayout * layout;
-  
+
 public slots:
 
     void changed(const QString & txt){
@@ -38,16 +37,10 @@ public:
   
     WStringEntry(SettingsWindowLink *settings_link,SettingsLinkAP *settings, std::string name,std::wstring description) : EntryTemplate(settings_link,settings,name,description){
 
-        layout = new QBoxLayout(QBoxLayout::Direction::LeftToRight,this);
-
         text = new QLineEdit();
         text->setText(QString::fromStdWString(settings->getWString(name)));
         layout->addWidget(text);
-        
-        QLabel * label = new QLabel(QString::fromStdString(name));
-        label->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
-        layout->addWidget(label);
-        
+
         connect(text, SIGNAL(textChanged(const QString &)), this, SLOT(changed(const QString &)));
 
     };

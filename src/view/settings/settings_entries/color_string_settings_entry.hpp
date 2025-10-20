@@ -22,7 +22,6 @@
 class ColorStringEntry : public EntryTemplate { 
 Q_OBJECT
     QFontComboBox * font;
-    QBoxLayout * layout;
 
     QPushButton *pb;
   
@@ -40,19 +39,13 @@ public:
   
     ColorStringEntry(SettingsWindowLink *settings_link,SettingsLinkAP *settings, std::string name,std::wstring description) : EntryTemplate(settings_link,settings,name,description){
 
-        layout = new QBoxLayout(QBoxLayout::Direction::LeftToRight,this);
-
         pb = new QPushButton("color");
         pb->setStyleSheet("background-color: " + QString::fromStdWString(settings->getWString(name)) + " ;");
+        pb->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
         std::cout << ("background-color: " + QString::fromStdWString(settings->getWString(name)) + " ;").toStdString() << std::endl;
         layout->addWidget(pb);
         connect( pb, SIGNAL(clicked()), this, SLOT(click()));
-        
-        QLabel * label = new QLabel(QString::fromStdString(name));
-        label->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
-        layout->addWidget(label);
-
-
+    
     };
 
 };

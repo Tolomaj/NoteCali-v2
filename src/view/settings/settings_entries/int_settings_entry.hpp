@@ -37,17 +37,14 @@ public:
   
     IntEntry(SettingsWindowLink *settings_link,SettingsLinkAP *settings, std::string name,std::wstring description,std::vector<int> options  = {}) : EntryTemplate(settings_link,settings,name,description){
 
-        QBoxLayout * layout = new QBoxLayout(QBoxLayout::Direction::RightToLeft,this);
-
-        label = new QLabel(QString::fromStdString(name));
-        layout->addWidget(label);
-        
         if(options.size() == 3){
             QSlider * sbox = new QSlider(Qt::Horizontal);
+            sbox->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
             sbox->setValue(settings->getInt(name));
             box = sbox;
         }else{
             QSpinBox * sbox = new QSpinBox();
+            sbox->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
             sbox->setValue(settings->getInt(name));
             box = sbox;
         }

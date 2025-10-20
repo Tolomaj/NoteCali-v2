@@ -21,6 +21,7 @@ HEADERS += view/calculator/calculator_header.hpp
 
 HEADERS += view/settings/settings_window.hpp
 HEADERS += view/settings/settings_sidepanel.hpp
+HEADERS += view/settings/settings_about.hpp
 
 HEADERS += view/settings/settings_entries/bool_settings_entry.hpp
 HEADERS += view/settings/settings_entries/int_settings_entry.hpp

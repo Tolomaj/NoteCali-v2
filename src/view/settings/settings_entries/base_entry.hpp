@@ -29,6 +29,8 @@ protected:
     SettingsWindowLink *settings_link;
     SettingsLinkAP *settings;
 
+    QBoxLayout * layout;
+
 public: 
   
     EntryTemplate(SettingsWindowLink *settings_link,SettingsLinkAP *settings, std::string name,std::wstring description) : QFrame(){
@@ -37,15 +39,25 @@ public:
         this->settings = settings;
         this->settings_link = settings_link;
 
-        this->setFrameStyle(QFrame::StyledPanel | QFrame::Raised);
+        this->setFrameStyle(QFrame::Panel);
         //this->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
 
-        QPalette palet = qApp->palette();
-        QString style = "background: " + palet.color(QPalette::Window).name();
-        this->setStyleSheet(style);
+        // set background color type
+        this->setAutoFillBackground(true);
+        this->setBackgroundRole(QPalette::Window);
 
         this->setAttribute(Qt::WA_Hover, true);
         this->setMouseTracking(true);
+
+        layout = new QBoxLayout(QBoxLayout::Direction::LeftToRight,this);
+        layout->setContentsMargins(6,3,6,3);
+
+        // laber for the line
+        QLabel * label = new QLabel(QString::fromStdString(name));
+        label->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
+        layout->addWidget(label);
+
+        layout->addStretch();
 
     };
 

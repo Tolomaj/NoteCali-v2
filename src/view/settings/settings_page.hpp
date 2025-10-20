@@ -66,15 +66,17 @@ public:
         this->settings_link = settings_link;
         this->settingsAP = settingsAP;
         
-        this->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-        QPalette palet = qApp->palette();
-        this->setStyleSheet("background: " + palet.color(QPalette::AlternateBase).name());
+        this->setFrameStyle(QFrame::Panel);
+        this->setAutoFillBackground(true);
+        this->setBackgroundRole(QPalette::AlternateBase);
     
         pagesLayout = new QBoxLayout(QBoxLayout::Direction::TopToBottom,this);
+        pagesLayout->setContentsMargins(0, 0, 0, 0);
+        pagesLayout->setSpacing(0);
+
 
         settings_hint = new SettingsHint();
         pagesLayout->addWidget(settings_hint);
-
 
     };
 
@@ -152,6 +154,11 @@ public:
         CathegoryPage * page = this->add_cathegory(textEntry.category);
         QLabel * entry = new QLabel(QString::fromStdString(textEntry.text));
         page->add_to_page(entry);
+    }
+
+    void add_to_page(QWidget * widget, std::string cathegory_name){
+        CathegoryPage * page = this->add_cathegory(cathegory_name);
+        page->add_to_page(widget);
     }
 
     void add_help_info(QString name, QString description){
