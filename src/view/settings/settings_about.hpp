@@ -55,7 +55,6 @@ public:
         logLabel->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
         logLabel->setFrameShape(QFrame::NoFrame);
         logLabel->setText("<div style='word-wrap: break-word; white-space: normal;'>"  + content + "</div>");
-        logLabel->setMaximumWidth(1200);
         mainLayout->addWidget(logLabel);
     }
 };
