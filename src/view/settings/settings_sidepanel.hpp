@@ -34,9 +34,6 @@ public slots:
 public: 
     SettingsSidePanel(SettingsWindow *parent = 0) : QFrame(parent){
         this->parent = parent;
-        
-        //QPalette palet = qApp->palette();
-        //this->setStyleSheet("background: " + palet.color(QPalette::Base).name());
 
         // Set background role to Base and enable autoFillBackground
         this->setAutoFillBackground(true);

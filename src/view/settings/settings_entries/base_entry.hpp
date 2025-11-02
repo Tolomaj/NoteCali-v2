@@ -39,7 +39,7 @@ public:
         this->settings = settings;
         this->settings_link = settings_link;
 
-        this->setFrameStyle(QFrame::Panel);
+        this->setFrameStyle(QFrame::StyledPanel);
         //this->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
 
         // set background color type

@@ -8,6 +8,7 @@
 
 #include "settings_about.hpp"
 #include "settings_page.hpp"
+#include "settings_variables.hpp"
 
 SettingsWindow::SettingsWindow(SettingsLinkAP *settings,SettingsWindowLink * controller,QMainWindow *parent) : QMainWindow(parent){
     this->controller = controller;
@@ -35,8 +36,9 @@ SettingsWindow::SettingsWindow(SettingsLinkAP *settings,SettingsWindowLink * con
 
     // create help page
     pageS->add_help_info("test","text");
+
     // create variables page
-    pageS->add_to_page((SettingsTextEntry){"This is unfinished Variables page","Variables"});
+    pageS->add_to_page(new SettingsVariables(),"Variables");
     
     // create AboutApp page
     pageS->add_to_page(new SettingsAbout(R"(Big Thanks to you <span style="font-family: 'Segoe UI Emoji';">💕</span>)",

@@ -20,7 +20,7 @@ class SettingsAbout : public QFrame {
 
 public:
     SettingsAbout(const QString& name, const QString& content) : QFrame() {
-        this->setFrameStyle(QFrame::Panel);
+        this->setFrameStyle(QFrame::StyledPanel);
         this->setAutoFillBackground(true);
         this->setBackgroundRole(QPalette::Window);
 

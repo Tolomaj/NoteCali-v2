@@ -45,8 +45,6 @@ public:
         layout->addWidget(calculator_boady);
 
         this->setCentralWidget(centralWidget);
-        //this->setAttribute(Qt::WA_TranslucentBackground);
-        //this->setStyleSheet("border-radius:5px");
 
         this->reloadStyles();
 
