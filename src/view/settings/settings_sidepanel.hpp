@@ -65,9 +65,10 @@ public:
         connect( about_app_BTN, SIGNAL(clicked()), this, SLOT(buttonclick()));
         layoutA->addWidget(about_app_BTN);
 
-        QPushButton *updates_BTN = new QPushButton("Updates");
-        connect( updates_BTN, SIGNAL(clicked()), this, SLOT(buttonclick()));
-        layoutA->addWidget(updates_BTN);
+        // Updates button
+        //QPushButton *updates_BTN = new QPushButton("Updates");
+        //connect( updates_BTN, SIGNAL(clicked()), this, SLOT(buttonclick()));
+        //layoutA->addWidget(updates_BTN);
 
     };
 

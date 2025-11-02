@@ -8,12 +8,12 @@
 
 #include "settings_about.hpp"
 #include "settings_page.hpp"
-#include "settings_variables.hpp"
 
 SettingsWindow::SettingsWindow(SettingsLinkAP *settings,SettingsWindowLink * controller,QMainWindow *parent) : QMainWindow(parent){
     this->controller = controller;
     this->settings = settings;
-    this->resize(450,450);
+    this->resize(550,550);
+    this->setMinimumWidth(550);
 
     // set background color type
     this->setAutoFillBackground(true);
@@ -30,16 +30,21 @@ SettingsWindow::SettingsWindow(SettingsLinkAP *settings,SettingsWindowLink * con
     cathegory_list->setFixedWidth(100);
     layout->addWidget(cathegory_list);
 
-    /// testting area
     pageS = new SettingsPage(controller,settings,this);
     layout->addWidget(pageS);
 
     // create help page
-    pageS->add_help_info("test","text");
+    //pageS->add_help_info("test","text");
 
     // create variables page
-    pageS->add_to_page(new SettingsVariables(),"Variables");
-    
+    //pageS->add_to_page(new SettingsVariables(),"Variables");
+
+
+    this->reloadStyles();
+    this->show();
+};
+
+void SettingsWindow::load_other_cathegories(){
     // create AboutApp page
     pageS->add_to_page(new SettingsAbout(R"(Big Thanks to you <span style="font-family: 'Segoe UI Emoji';">💕</span>)",
         R"( My name was Ondřej Gross and big thanks to you user for downloading this app.<br>
@@ -84,11 +89,8 @@ SettingsWindow::SettingsWindow(SettingsLinkAP *settings,SettingsWindowLink * con
         ),std::string("AboutApp"));
 
     // create Updates page
-    pageS->add_to_page((SettingsTextEntry){"This is unfinished Updates page","Updates"});
-
-    this->reloadStyles();
-    this->show();
-};
+    //pageS->add_to_page((SettingsTextEntry){"This is unfinished Updates page","Updates"});
+}
 
 void SettingsWindow::loadSettings(SettingsLinkGP * settingsGP){
     int i = 0;

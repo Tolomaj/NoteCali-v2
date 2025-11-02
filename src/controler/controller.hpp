@@ -44,6 +44,7 @@ public:
         if(settings_window == nullptr){
             settings_window = new SettingsWindow(settings,this);
             settings_window->loadSettings(settings);
+            settings_window->load_other_cathegories();
         }else{
             delete settings_window;
             settings_window = nullptr;

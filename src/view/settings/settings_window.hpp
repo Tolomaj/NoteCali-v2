@@ -53,6 +53,8 @@ public:
 
     void setHint(std::string name, std::wstring description);
 
+    void load_other_cathegories();
+
     void closeEvent (QCloseEvent *event){
         Q_UNUSED(event);
         controller->close_settings();

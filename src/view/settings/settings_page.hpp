@@ -66,7 +66,7 @@ public:
         this->settings_link = settings_link;
         this->settingsAP = settingsAP;
         
-        this->setFrameStyle(QFrame::Panel);
+        this->setFrameStyle(QFrame::StyledPanel);
         this->setAutoFillBackground(true);
         this->setBackgroundRole(QPalette::AlternateBase);
     
