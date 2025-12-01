@@ -69,23 +69,26 @@ void SettingsWindow::load_other_cathegories(){
         ),std::string("AboutApp"));
 
     pageS->add_to_page(new SettingsAbout("Credits for used librataries",
-        R"( This aplication uses Sciter for creting UI.<br>
-            Thanks to Andrew Fedoniouk for creting sciter <span style="font-family: 'Segoe UI Emoji';">💕</span>.<br>
+        R"( This aplication uses Qt for creting UI.<br>
+            Thanks to The Qt Company for creating the Qt framework.<span style="font-family: 'Segoe UI Emoji';">💕</span>.<br>
             Project can be found on site:.<br>
-            <a target="@system" href="https://sciter.com/">sciter.com</a>
+            <a target="@system" href="https://www.qt.io/">qt.io</a>
             <br>
             <br>
             Core of this aplication runs on ttmath that do every mathematical hevy lifting.<br>
             Thanks to Tomasz Sowa for creting ttmath <span style="font-family: 'Segoe UI Emoji';">💕</span>.<br>
             Project can be found on site:.<br>
             <a target="@system" href="https://www.ttmath.org/">ttmath.org</a>
-            <br>
+          )" 
+          /*
+                      <br>
             <br>
             Last Library used in NoteCali is CURL.<br>
             CURL works because contributors,<br>
             big thangs to them for this library <span style="font-family: 'Segoe UI Emoji';">💕</span>.<br>
             Project can be found on site:.<br>
-            <a target="@system" href="https://curl.se/">curl.se</a>   )" 
+            <a target="@system" href="https://curl.se/">curl.se</a> 
+          */
         ),std::string("AboutApp"));
 
     // create Updates page
