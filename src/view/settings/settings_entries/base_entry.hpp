@@ -15,6 +15,7 @@
 
 #include <iostream>
 #include <vector>
+#include <QPainter>
 
 #include "../../../link/settings_link.hpp"
 #include "../../../link/window_link.hpp"
@@ -39,27 +40,40 @@ public:
         this->settings = settings;
         this->settings_link = settings_link;
 
-        this->setFrameStyle(QFrame::StyledPanel);
-        //this->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
-
-        // set background color type
-        this->setAutoFillBackground(true);
-        this->setBackgroundRole(QPalette::Window);
+        this->setFrameStyle(QFrame::NoFrame);
+        this->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
 
         this->setAttribute(Qt::WA_Hover, true);
         this->setMouseTracking(true);
 
         layout = new QBoxLayout(QBoxLayout::Direction::LeftToRight,this);
-        layout->setContentsMargins(6,3,6,3);
+        int horizontalSpacing = style()->pixelMetric(QStyle::PM_LayoutHorizontalSpacing, nullptr, this);
+        int verticalSpacing = style()->pixelMetric(QStyle::PM_LayoutVerticalSpacing, nullptr, this);
+
+        if (horizontalSpacing < 0) { horizontalSpacing = 6; }
+        if (verticalSpacing < 0) { verticalSpacing = 6; }
+
+        layout->setContentsMargins(horizontalSpacing, verticalSpacing / 2, horizontalSpacing, verticalSpacing / 2);
+        layout->setSpacing(horizontalSpacing);
 
         // laber for the line
         QLabel * label = new QLabel(QString::fromStdString(name));
-        label->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
+        label->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Fixed);
         layout->addWidget(label);
 
         layout->addStretch();
 
     };
+
+protected:
+    void paintEvent(QPaintEvent *event) override {
+        QFrame::paintEvent(event);
+
+        // Theme-aware separator.
+        QPainter painter(this);
+        painter.setPen(palette().color(QPalette::Mid));
+        painter.drawLine(rect().bottomLeft(), rect().bottomRight());
+    }
 
 
     void leaveEvent(QEvent * event){

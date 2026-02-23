@@ -1,6 +1,5 @@
 make:
-	@cd src/ && make -j"$(nproc)" 
-# qmake -makefile && make CFLAGS=-DEBUG=0
+	@cd src/ && qmake -makefile && make CFLAGS=-DEBUG=0
 # remove all tmp files
 #	@rm -rf output/tmp src/.qmake.stash src/Makefile
 #run compiled file
