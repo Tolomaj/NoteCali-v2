@@ -20,8 +20,12 @@
 
 
 int main(int argc, char **argv) {
-    //dbgInfo("App Starting");
+    dbgInfo("App Starting");
     QApplication app(argc, argv);
+
+    const QString iconPath = QCoreApplication::applicationDirPath() + "/assets/icon.ico";
+    app.setWindowIcon(QIcon(iconPath));
+
 
     Settings * settings = new Settings("setings.ini");
 

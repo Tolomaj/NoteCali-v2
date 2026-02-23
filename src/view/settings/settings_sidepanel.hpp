@@ -46,7 +46,7 @@ public:
 
         
         //create app icon
-        QPixmap pixelmap("./assets/icon.ico");
+        QPixmap pixelmap(QCoreApplication::applicationDirPath() + "/assets/icon.ico");
         QLabel * myLabel = new QLabel();
         myLabel->setPixmap(pixelmap.scaled(50,50,Qt::KeepAspectRatio));
         myLabel->setMargin(15);
