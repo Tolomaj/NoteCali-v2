@@ -12,6 +12,7 @@
 #include <sstream>
 #include <string>
 #include <algorithm>
+#include <QDir>
 
 
 #ifndef SETTINGS_LIST_GUARD
@@ -46,7 +47,7 @@ public:
 
         
         //create app icon
-        QPixmap pixelmap(QCoreApplication::applicationDirPath() + "/assets/icon.ico");
+        QPixmap pixelmap(QDir(QCoreApplication::applicationDirPath()).filePath("assets/icon.ico"));
         QLabel * myLabel = new QLabel();
         myLabel->setPixmap(pixelmap.scaled(50,50,Qt::KeepAspectRatio));
         myLabel->setMargin(15);

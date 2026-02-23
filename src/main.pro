@@ -2,6 +2,12 @@ QT += widgets
 
 CONFIG += c++17
 CONFIG += console
+
+win32 {
+    CONFIG -= console
+    CONFIG += windows
+}
+
 QMAKE_CXXFLAGS += -Wno-enum-compare
 
 SOURCES = main.cpp

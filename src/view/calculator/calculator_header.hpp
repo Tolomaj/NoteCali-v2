@@ -9,6 +9,7 @@
 #include <QTextDocument>
 #include <QFontMetrics>
 #include <QString>
+#include <QDir>
 
 #include <iostream>
 
@@ -42,10 +43,10 @@ public slots:
 
     void pin_clicked(){ 
         if(on_top){
-            pin->setIcon(QIcon(QCoreApplication::applicationDirPath() + "assets/pin.svg"));
+            pin->setIcon(QIcon(QDir(QCoreApplication::applicationDirPath()).filePath("assets/pin.svg")));
             parentWindow->setWindowFlag(Qt::WindowStaysOnTopHint, false);
         }else{
-            pin->setIcon(QIcon(QCoreApplication::applicationDirPath() + "assets/unpin.svg"));
+            pin->setIcon(QIcon(QDir(QCoreApplication::applicationDirPath()).filePath("assets/unpin.svg")));
             parentWindow->setWindowFlag(Qt::WindowStaysOnTopHint, true);
         }
         on_top = !on_top;
@@ -62,11 +63,11 @@ public:
         layout->setSpacing(0);
         layout->setContentsMargins(0,0,0,0);
 
-        QPushButton * menu = new HeaderButton(QCoreApplication::applicationDirPath() + "assets/menu.svg");
+        QPushButton * menu = new HeaderButton(QDir(QCoreApplication::applicationDirPath()).filePath("assets/menu.svg"));
         connect(&(*menu), SIGNAL(clicked()), this, SLOT(settings_clicked()));
         layout->addWidget(menu);
 
-        pin = new HeaderButton(QCoreApplication::applicationDirPath() + "assets/pin.svg");
+        pin = new HeaderButton(QDir(QCoreApplication::applicationDirPath()).filePath("assets/pin.svg"));
         connect(&(*pin), SIGNAL(clicked()), this, SLOT(pin_clicked()));
         layout->addWidget(pin);
 
@@ -74,11 +75,11 @@ public:
         name->setAlignment(Qt::AlignCenter);
         layout->addWidget(name);
 
-        QPushButton * minimalise = new HeaderButton(QCoreApplication::applicationDirPath() + "assets/minimalize.svg");
+        QPushButton * minimalise = new HeaderButton(QDir(QCoreApplication::applicationDirPath()).filePath("assets/minimalize.svg"));
         connect(&(*minimalise), SIGNAL(clicked()), this, SLOT(minimalise_clicked()));
         layout->addWidget(minimalise);
 
-        QPushButton * close = new HeaderButton(QCoreApplication::applicationDirPath() + "assets/close.svg");
+        QPushButton * close = new HeaderButton(QDir(QCoreApplication::applicationDirPath()).filePath("assets/close.svg"));
         connect(&(*close), SIGNAL(clicked()), this, SLOT(close_clicked()));
         layout->addWidget(close);
 

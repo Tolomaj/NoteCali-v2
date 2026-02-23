@@ -10,6 +10,7 @@
 #include <QFontMetrics>
 #include <iostream>
 #include <QFontDialog>
+#include <QDir>
 
 // set debug level in this library
 #include "link/debugger.hpp"
@@ -23,7 +24,7 @@ int main(int argc, char **argv) {
     dbgInfo("App Starting");
     QApplication app(argc, argv);
 
-    const QString iconPath = QCoreApplication::applicationDirPath() + "/assets/icon.ico";
+    const QString iconPath = QDir(QCoreApplication::applicationDirPath()).filePath("assets/icon.ico");
     app.setWindowIcon(QIcon(iconPath));
 
 

@@ -6,7 +6,7 @@ make:
 	cd output && ./main
 
 clear:
-	@rm -rf output/tmp src/.qmake.stash src/Makefile output/main  output/main.exe output/platforms output/styles
+	@rm -rf output/tmp src/.qmake.stash src/Makefile output/main  output/main.exe output/platforms output/iconengines output/imageformats output/styles
 	@rm output/*.dll
 
 #windows:
@@ -23,15 +23,16 @@ clear:
 
 MINGW_ROOT := /usr/x86_64-w64-mingw32/sys-root/mingw
 
+
 windows:
 	@cd src && x86_64-w64-mingw32-qmake-qt6 -makefile main.pro && $(MAKE)
-	@mkdir -p output/platforms output/styles
+	@mkdir -p output/platforms output/styles output/imageformats output/iconengines
 
-	# copy all runtime deps (avoids missing libfreetype/libpng/etc.)
 	@cp -f $(MINGW_ROOT)/bin/*.dll output/
-
-	# required Qt plugins
 	@cp -f $(MINGW_ROOT)/lib/qt6/plugins/platforms/qwindows.dll output/platforms/
-	@cp -f $(MINGW_ROOT)/lib/qt6/plugins/styles/qmodernwindowsstyle.dll output/styles/ || true
+	@cp -f $(MINGW_ROOT)/lib/qt6/plugins/styles/*.dll output/styles/ || true
+
+	@cp -f $(MINGW_ROOT)/lib/qt6/plugins/imageformats/*.dll output/imageformats/ || true
+	@cp -f $(MINGW_ROOT)/lib/qt6/plugins/iconengines/*.dll output/iconengines/ || true
 
 	@rm -rf output/tmp src/.qmake.stash src/*.Debug src/*.Release src/Makefile
