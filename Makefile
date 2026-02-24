@@ -1,5 +1,5 @@
 make:
-	@cd src/ && qmake -makefile && make CFLAGS=-DEBUG=0
+	@cd src/ && qmake -makefile && make -j$(nproc) CFLAGS=-DEBUG=0
 # remove all tmp files
 #	@rm -rf output/tmp src/.qmake.stash src/Makefile
 #run compiled file
@@ -7,7 +7,7 @@ make:
 
 clear:
 	@rm -rf output/tmp src/.qmake.stash src/Makefile output/main  output/main.exe output/platforms output/iconengines output/imageformats output/styles
-	@rm output/*.dll
+	@rm -f output/*.dll
 
 #windows:
 ##todo celé dodělat

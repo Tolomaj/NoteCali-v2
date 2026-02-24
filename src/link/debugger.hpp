@@ -6,9 +6,7 @@
  *  1 basic log
  *  2 log with additional info 
  */
-#ifndef DEBUG_LOG_LEVEL
-#define DEBUG_LOG_LEVEL 2
-#endif
+#define DEBUG_LOG_LEVEL 2 //todo při vydání nastavit na 0
 
 #define CLR_NC "\e[0m"
 #define CLR_RED "\e[0;31m"
