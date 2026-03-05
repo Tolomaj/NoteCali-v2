@@ -53,12 +53,12 @@ private:
     bool collapsible = true;
     bool docked = false;
     int sizeLevel = 10;
-    int overlayHeight = 34;
+    int overlayHeight = 32;
     int overlayMargin = 6;
-    int buttonSide = 18;
-    int scrollHeight = 22;
-    int iconPx = 14;
-    int cornerRadius = 7;
+    int buttonSide = 24;
+    int scrollHeight = 28;
+    int iconPx = 18;
+    int cornerRadius = 8;
     bool applyingThemeVisual = false;
     bool startupCollapseApplied = false;
     QGraphicsDropShadowEffect *elevationEffect = nullptr;
@@ -70,29 +70,34 @@ private:
     void applySizing() {
         float factor = static_cast<float>(sizeLevel) / 10.0f;
 
-        overlayHeight = scaled(34, factor, 18);
         overlayMargin = scaled(6, factor, 2);
-        buttonSide = scaled(18, factor, 10);
-        scrollHeight = scaled(22, factor, 12);
-        iconPx = scaled(14, factor, 8);
-        cornerRadius = scaled(7, factor, 3);
+        buttonSide = scaled(24, factor, 16);
+        iconPx = scaled(18, factor, 12);
+        cornerRadius = scaled(8, factor, 4);
 
-        int spacing = scaled(4, factor, 1);
-        int marginX = scaled(6, factor, 2);
-        int marginY = scaled(4, factor, 2);
+        int spacing = scaled(1, factor, 0);
+        int outerPadding = scaled(2, factor, 1);
+        int buttonPadding = scaled(2, factor, 1);
+        scrollHeight = buttonSide + (buttonPadding * 2);
+        overlayHeight = scrollHeight + (outerPadding * 2);
         this->setFixedHeight(overlayHeight);
         if (rootLayout != nullptr) {
             rootLayout->setSpacing(spacing);
-            rootLayout->setContentsMargins(marginX, marginY, marginX, marginY);
+            rootLayout->setContentsMargins(outerPadding, outerPadding, outerPadding, outerPadding);
         }
         if (scrollArea != nullptr) {
             scrollArea->setFixedHeight(scrollHeight);
         }
         if (toggleButton != nullptr) {
             toggleButton->setFixedSize(buttonSide, buttonSide);
+            QFont toggleFont = toggleButton->font();
+            toggleFont.setPointSize(scaled(11, factor, 8));
+            toggleButton->setFont(toggleFont);
         }
 
         if (scrollLayout != nullptr) {
+            scrollLayout->setSpacing(spacing);
+            scrollLayout->setContentsMargins(buttonPadding, buttonPadding, buttonPadding, buttonPadding);
             for (int i = 0; i < scrollLayout->count(); i++) {
                 QLayoutItem *item = scrollLayout->itemAt(i);
                 if (item == nullptr || item->widget() == nullptr) {
@@ -102,8 +107,17 @@ private:
                 if (btn == nullptr) {
                     continue;
                 }
-                btn->setFixedHeight(buttonSide);
                 btn->setIconSize(QSize(iconPx, iconPx));
+                QFont buttonFont = btn->font();
+                buttonFont.setPointSize(scaled(11, factor, 8));
+                btn->setFont(buttonFont);
+
+                int buttonWidth = buttonSide;
+                QString text = btn->text().trimmed();
+                if (!text.isEmpty() && text.size() > 1) {
+                    buttonWidth = qMax(buttonWidth, btn->sizeHint().width());
+                }
+                btn->setFixedSize(buttonWidth, buttonSide);
             }
         }
 
@@ -221,12 +235,21 @@ private:
             minimized = false;
             scrollArea->setVisible(true);
             toggleButton->setVisible(false);
+            if (rootLayout != nullptr) {
+                rootLayout->setAlignment(toggleButton, Qt::AlignRight | Qt::AlignVCenter);
+            }
             return;
         }
 
         toggleButton->setVisible(true);
         scrollArea->setVisible(!minimized);
         toggleButton->setText(minimized ? ">>" : "<<");
+        if (rootLayout != nullptr) {
+            rootLayout->setAlignment(
+                toggleButton,
+                minimized ? Qt::AlignCenter : (Qt::AlignRight | Qt::AlignVCenter)
+            );
+        }
     }
 
     bool isDockedInHostLayout() const {
@@ -296,8 +319,8 @@ public:
         this->setGraphicsEffect(elevationEffect);
 
         rootLayout = new QHBoxLayout(this);
-        rootLayout->setSpacing(4);
-        rootLayout->setContentsMargins(6, 4, 6, 4);
+        rootLayout->setSpacing(1);
+        rootLayout->setContentsMargins(2, 2, 2, 2);
 
         scrollArea = new HorizontalWheelArea(this);
         scrollArea->setWidgetResizable(true);
@@ -306,12 +329,12 @@ public:
         scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         scrollArea->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
         scrollArea->setMinimumWidth(0);
-        scrollArea->setFixedHeight(22);
+        scrollArea->setFixedHeight(28);
 
         scrollContent = new QWidget(scrollArea);
         scrollLayout = new QHBoxLayout(scrollContent);
-        scrollLayout->setSpacing(2);
-        scrollLayout->setContentsMargins(0, 0, 0, 0);
+        scrollLayout->setSpacing(1);
+        scrollLayout->setContentsMargins(2, 2, 2, 2);
         scrollLayout->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
         scrollLayout->setSizeConstraint(QLayout::SetNoConstraint);
         scrollContent->setLayout(scrollLayout);
@@ -321,8 +344,8 @@ public:
         toggleButton = new QToolButton(this);
         toggleButton->setCursor(Qt::PointingHandCursor);
         toggleButton->setAutoRaise(true);
-        toggleButton->setFixedSize(18, 18);
-        rootLayout->addWidget(toggleButton, 0, Qt::AlignRight);
+        toggleButton->setFixedSize(24, 24);
+        rootLayout->addWidget(toggleButton, 0);
         connect(toggleButton, &QToolButton::clicked, this, [this]() {
             if (!collapsible) {
                 return;
@@ -552,7 +575,7 @@ protected:
     }
 
     void placeAtBottom(int parentWidth, int parentHeight) {
-        int minWidth = buttonSide + (overlayMargin * 2);
+        int minWidth = overlayHeight;
         int widthWhenExpanded = qMax(buttonSide * 5, parentWidth - (2 * overlayMargin));
         int finalWidth = minimized ? minWidth : widthWhenExpanded;
         int x = overlayMargin;

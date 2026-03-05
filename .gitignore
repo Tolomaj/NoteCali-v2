@@ -1,5 +1,6 @@
 /.mine
 /output/main
+/output/
 /.vscode
 /gitignore
 src/Makefile

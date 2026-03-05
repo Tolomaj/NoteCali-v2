@@ -1,4 +1,3 @@
-
 #include <QtGui>
 #include <QApplication>
 #include <QLabel>
@@ -28,9 +27,7 @@ public slots:
 
     void changed(const QFont & font){
         std::wstring wtxt = font.family().toStdWString();
-        std::wcout << L"font changed: " << wtxt << std::endl;
         settings_link->setWString(name,wtxt);
-        std::wcout << L"font changed ende: " << wtxt << std::endl;
     }
 
 public: 
