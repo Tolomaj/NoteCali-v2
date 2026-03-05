@@ -28,6 +28,7 @@ public:
     SettingsLinkAP * settings;
     bool clickCopyable;
     bool copy_rounded;
+    bool hide_warning_text;
     bool solution_scaling;
     int line_count = 0;
 
@@ -39,6 +40,7 @@ public:
         this->clickCopyable = settings->getBool("ClickToCopy");
         this->copy_rounded = settings->getBool("CopyRounded");
         this->solution_scaling = settings->getBool("ScaleSolutions");
+        this->hide_warning_text = settings->getBool("HideWarningText");
 
         layout = new QBoxLayout(QBoxLayout::Direction::TopToBottom,this);
         layout->setAlignment(Qt::AlignTop);
@@ -64,6 +66,14 @@ public:
             line->setFont(font);
         }  
     }
+
+    void setShowWarningText(bool enable){
+        this->hide_warning_text = enable;
+        for (int i = 0; i < layout->count(); i++){
+            SolutionLine * line = (SolutionLine*)(layout->itemAt(i)->widget());
+            line->setShowWarningText(enable);
+        } 
+    };
 
     void setCopy(bool clickCopyable,bool copyRounded){
         this->clickCopyable = clickCopyable;
@@ -94,7 +104,7 @@ public:
 
         for (int i = 0; i < linesNeed; i++){
             if(add){
-                SolutionLine * line = new SolutionLine(this,this->clickCopyable,this->copy_rounded, this->solution_scaling );
+                SolutionLine * line = new SolutionLine(this,this->hide_warning_text,this->clickCopyable,this->copy_rounded, this->solution_scaling );
                 if(font != nullptr){
                     line->setFont(font);
                 }

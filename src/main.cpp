@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
     settings->createWStringEntry("LineColor","Style",L"#3DAEE9;",L"Color of dividing line of calculator",COLOR);
     settings->createBoolEntry("UseHighliting","Style",true,L"Color the input text. For example it hihlights pointers or comments");
     settings->createBoolEntry("ScaleSolutions","Style",true,L"");
-
+    settings->createBoolEntry("HideWarningText","Style",false,L"");
 
     settings->createBoolEntry("UseLineModifiers","Calculation",true,L"");
     settings->createBoolEntry("UseMetrics","Calculation",false,L"");

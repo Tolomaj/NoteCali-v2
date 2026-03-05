@@ -27,18 +27,20 @@ class SolutionLine : public QWidget{
     QLabel * information;
     QWidget *parent;
     QFont * usedFont = nullptr;
-    
+
+    bool hide_warning_text = true;
     bool clickCopyable = true;
     bool copy_rounded = false;
     bool scaling = true;
     std::wstring no_round_solution;
     std::wstring round_solution;
 public:
-    SolutionLine(QWidget *parent,bool clickCopyable,bool copy_rounded,bool scaling) : QWidget(parent){
+    SolutionLine(QWidget *parent,bool hide_warning_text,bool clickCopyable,bool copy_rounded,bool scaling) : QWidget(parent){
         this->parent = parent;
 
         layout = new QBoxLayout(QBoxLayout::Direction::LeftToRight,this);
         layout->setSpacing(0);
+        layout->setAlignment(Qt::AlignCenter);
         layout->setContentsMargins(0,0,0,0);
 
         // todo crete as images
@@ -60,7 +62,7 @@ public:
         text->setTextInteractionFlags(Qt::TextSelectableByMouse);
         layout->addWidget(text);
 
-
+        this->setShowWarningText(hide_warning_text);
         this->setCopy(clickCopyable,copy_rounded);
         this->setScaling(scaling);
         this->setContentsMargins(2,0,2,0);
@@ -81,6 +83,10 @@ public:
     void setFont(QFont * font){
         usedFont = font;
         text->setFont(*font);
+    }
+
+    void setShowWarningText(bool enable){
+        this->hide_warning_text = enable;
     }
 
 
@@ -142,8 +148,11 @@ public:
         }
 
         if(solution->isError){
-            //todo add option to hide error text
-            text->setText(QString::fromStdWString(solution->solution));
+            if(this->hide_warning_text){
+                text->setText(QString::fromStdWString(solution->solution));
+            }else{
+                text->setText("");
+            }
             error->show();
         }else{
 

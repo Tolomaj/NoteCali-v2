@@ -98,6 +98,7 @@ public:
         text = new QTextEdit();
         text->setMinimumWidth(40);
         text->setFrameStyle(QFrame::NoFrame);
+        text->setAcceptRichText(false); 
         //text->setHtml(QString::fromStdWString(L"- helo this is🥰 anĎ lÓng teČt helo😀"));
         text->setFont(font);
         text->setStyleSheet("background-color:transparent;");
@@ -114,6 +115,7 @@ public:
         solution_box->setMinimumWidth(20);
         solution_box->setFrameStyle(QFrame::NoFrame);
         solution_box->setContentsMargins(5,0,5,0);
+        solution_box->setStyleSheet("background-color:transparent;");
         solution_box->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         solution_box->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         solution_box->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
@@ -191,6 +193,7 @@ public:
         font = QFont(QString::fromStdWString(settings->getWString("Font")) , settings->getInt("FontSize"));
         text->setFont(font);
         solution_box->setFont(&font);
+        solution_box->setShowWarningText(settings->getBool("HideWarningText"));
         solution_box->setCopy(settings->getBool("ClickToCopy"),settings->getBool("CopyRounded"));
         solution_box->setScaling(settings->getBool("ScaleSolutions"));
 
