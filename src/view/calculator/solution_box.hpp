@@ -40,7 +40,7 @@ public:
         this->clickCopyable = settings->getBool("ClickToCopy");
         this->copy_rounded = settings->getBool("CopyRounded");
         this->solution_scaling = settings->getBool("ScaleSolutions");
-        this->hide_warning_text = settings->getBool("HideWarningText");
+        this->hide_warning_text = settings->getBool("ShowWarningText");
 
         layout = new QBoxLayout(QBoxLayout::Direction::TopToBottom,this);
         layout->setAlignment(Qt::AlignTop);

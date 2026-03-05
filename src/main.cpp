@@ -37,13 +37,16 @@ int main(int argc, char **argv) {
     settings->createBoolEntry("NativeTitleBar","Style",false,L"Use System Native Window Title Bar");
     settings->createBoolEntry("FloatingDivider","Style",false,L"Make dividing line float.");
     settings->createIntEntry("LineDefaultPosition","Style",70,L"",{0,2,100});
-    settings->createWStringEntry("Theme","Style",L"Auto",L"",COMBO,{L"Dark",L"Light",L"Manual"});
+    //settings->createWStringEntry("Theme","Style",L"Auto",L"",COMBO,{L"DARK",L"LIGHT",L"AUTO"});
     settings->createIntEntry("FontSize","Style",0,L"Size of font of input and output text",{0,40});
     settings->createWStringEntry("Font","Style",L"Helvetica",L"Fon t used for input and output text",FONT);
     settings->createWStringEntry("LineColor","Style",L"#3DAEE9;",L"Color of dividing line of calculator",COLOR);
     settings->createBoolEntry("UseHighliting","Style",true,L"Color the input text. For example it hihlights pointers or comments");
     settings->createBoolEntry("ScaleSolutions","Style",true,L"");
-    settings->createBoolEntry("HideWarningText","Style",false,L"");
+    settings->createBoolEntry("ShowWarningText","Style",true,L"");
+    settings->createIntEntry("ToolBarSize","Style",10,L"",{1,20});
+    settings->createWStringEntry("ToolBar","Style",L"COLAPSABLE",L"",COMBO,{L"COLAPSABLE",L"SHOWN",L"HIDDEN"});
+
 
     settings->createBoolEntry("UseLineModifiers","Calculation",true,L"");
     settings->createBoolEntry("UseMetrics","Calculation",false,L"");

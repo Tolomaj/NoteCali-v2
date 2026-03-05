@@ -20,6 +20,7 @@
 #include "settings_entries/bool_settings_entry.hpp"
 #include "settings_entries/int_settings_entry.hpp"
 #include "settings_entries/wstring_settings_entry.hpp"
+#include "settings_entries/combo_string_settings_entry.hpp"
 #include "settings_entries/font_string_settings_entry.hpp"
 #include "settings_entries/color_string_settings_entry.hpp"
 #include "settings_entries/settings_help_line.hpp"
@@ -140,6 +141,9 @@ public:
                 break;
             case COLOR:
                 entry = new ColorStringEntry(settings_link,settingsAP,option.name,option.desription); 
+                break;
+            case COMBO:
+                entry = new ComboStringEntry(settings_link,settingsAP,option.name,option.desription,option.options);
                 break;
             default:
                 return;

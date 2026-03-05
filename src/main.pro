@@ -32,5 +32,6 @@ HEADERS += view/settings/settings_about.hpp
 HEADERS += view/settings/settings_entries/bool_settings_entry.hpp
 HEADERS += view/settings/settings_entries/int_settings_entry.hpp
 HEADERS += view/settings/settings_entries/wstring_settings_entry.hpp
+HEADERS += view/settings/settings_entries/combo_string_settings_entry.hpp
 HEADERS += view/settings/settings_entries/font_string_settings_entry.hpp
 HEADERS += view/settings/settings_entries/color_string_settings_entry.hpp

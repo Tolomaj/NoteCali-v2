@@ -10,6 +10,7 @@
 #include <QFontMetrics>
 #include <QFrame>
 #include "solution_box.hpp"
+#include "shortcut_helper_bar.hpp"
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -24,8 +25,10 @@ class CalcBody : public QSplitter {
 Q_OBJECT
 private:
     SolutionBox * solution_box;
-    QBoxLayout * layout;
+    QWidget * text_panel = nullptr;
+    QVBoxLayout * text_panel_layout = nullptr;
     QTextEdit * text;
+    ShortcutHelperBar * shortcut_helper_bar = nullptr;
     QFont font;
     CalculatorWindowLink * controller;
     SettingsLinkAP * settings;
@@ -35,7 +38,6 @@ private:
     QTextCharFormat command;
     QTextCharFormat variable;
     QTextCharFormat jump;
-
 
     void sincSolutions(std::vector<std::wstring> * lines){ 
         dbg( std::cout << CLR_CYN << "RESINCHRONIZACE LINEK:" << std::endl; )
@@ -95,7 +97,12 @@ public:
         this->setContentsMargins(0,1,0,0);
         this->setChildrenCollapsible(false);
 
-        text = new QTextEdit();
+        text_panel = new QWidget(this);
+        text_panel_layout = new QVBoxLayout(text_panel);
+        text_panel_layout->setContentsMargins(0,0,0,0);
+        text_panel_layout->setSpacing(0);
+
+        text = new QTextEdit(text_panel);
         text->setMinimumWidth(40);
         text->setFrameStyle(QFrame::NoFrame);
         text->setAcceptRichText(false); 
@@ -106,7 +113,8 @@ public:
         text->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         text->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         connect(&(*text), SIGNAL(textChanged()), this, SLOT(onTextChanged()));
-        this->addWidget(text);
+        text_panel_layout->addWidget(text);
+        this->addWidget(text_panel);
 
 
 
@@ -120,6 +128,13 @@ public:
         solution_box->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         solution_box->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
         this->addWidget(solution_box);
+
+        shortcut_helper_bar = new ShortcutHelperBar(this);
+        shortcut_helper_bar->setEditor(text);
+        shortcut_helper_bar->setSettingsAction([this]() {
+            this->controller->toggleSettings();
+        });
+        shortcut_helper_bar->attachToBody(this);
 
  
         this->reloadStyles();
@@ -193,7 +208,7 @@ public:
         font = QFont(QString::fromStdWString(settings->getWString("Font")) , settings->getInt("FontSize"));
         text->setFont(font);
         solution_box->setFont(&font);
-        solution_box->setShowWarningText(settings->getBool("HideWarningText"));
+        solution_box->setShowWarningText(settings->getBool("ShowWarningText"));
         solution_box->setCopy(settings->getBool("ClickToCopy"),settings->getBool("CopyRounded"));
         solution_box->setScaling(settings->getBool("ScaleSolutions"));
 
@@ -238,14 +253,29 @@ public:
                 }
             )");
         }
+
+        if(shortcut_helper_bar != nullptr){
+            shortcut_helper_bar->syncFromSettings(settings);
+        }
    }
 
 
     void resizeEvent(QResizeEvent* event) override{
+        QSplitter::resizeEvent(event);
+
+        if(shortcut_helper_bar != nullptr){
+            shortcut_helper_bar->updatePlacement();
+        }
+
         std::vector<std::wstring>lines = this->getLines();
         this->sincSolutions(&lines);
+    }
 
-        QSplitter::resizeEvent(event);
+    void showEvent(QShowEvent* event) override{
+        QSplitter::showEvent(event);
+        if(shortcut_helper_bar != nullptr){
+            shortcut_helper_bar->updatePlacement();
+        }
     }
 
 };
